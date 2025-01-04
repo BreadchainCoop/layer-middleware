@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {Script} from "forge-std/Script.sol";
 import {console2} from "forge-std/Test.sol";
-import {HelloWorldDeploymentLib} from "./utils/HelloWorldDeploymentLib.sol";
+import {LayerMiddlewareDeploymentLib} from "./utils/LayerMiddlewareDeplomentLib.sol";
 import {CoreDeploymentLib} from "./utils/CoreDeploymentLib.sol";
 import {UpgradeableProxyLib} from "./utils/UpgradeableProxyLib.sol";
 import {StrategyBase} from "@eigenlayer/contracts/strategies/StrategyBase.sol";
@@ -65,8 +65,8 @@ contract LayerMiddlewareDeployer is Script {
             layerMiddlewareDeployment.stakeRegistry != address(0), "StakeRegistry address cannot be zero"
         );
         require(
-            layerMiddlewareDeployment.helloWorldServiceManager != address(0),
-            "layerMServiceManager address cannot be zero"
+            layerMiddlewareDeployment.layerServiceManager != address(0),
+            "layerServiceManager address cannot be zero"
         );
         require(layerMiddlewareDeployment.strategy != address(0), "Strategy address cannot be zero");
         require(proxyAdmin != address(0), "ProxyAdmin address cannot be zero");
