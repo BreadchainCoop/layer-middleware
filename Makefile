@@ -51,7 +51,7 @@ tests-contract: ## runs all forge tests
 
 ___RUST_OFFCHAIN_SOFTWARE___:
 start-rust-operator: ## start operator (part of quickstart) 
-	cargo run --bin start_operator
+	cargo run --bin register_layer_operator
 
 spam-rust-tasks:  ## start tasks spamming (part of quickstart)
 	cargo run --bin spam_tasks
