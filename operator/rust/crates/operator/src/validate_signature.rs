@@ -106,7 +106,7 @@ async fn validate_signature(
         dataHash: m_hash,
         signatureData: signature_data.into(),
     };
-    let offchain_message_consumer_address = parse_offchain_message_consumer_address("contracts/deployments/hello-world/17000.json")?;
+    let offchain_message_consumer_address = parse_offchain_message_consumer_address("contracts/deployments/layer-middleware/17000.json")?;
     let offchain_message_consumer = OffchainMessageConsumer::new(offchain_message_consumer_address, &pr);
     let tx = offchain_message_consumer.validateOffchainMessage(task).gas(500000).send().await?.get_receipt().await?.transaction_hash;
     get_logger().info(&format!("Signature verification completed with tx hash {}", tx), "");

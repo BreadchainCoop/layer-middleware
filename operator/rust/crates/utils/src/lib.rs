@@ -81,7 +81,7 @@ pub struct EigenLayerData {
 pub struct EigenLayerAddresses {
     #[serde(rename = "proxyAdmin")]
     proxy_admin: String,
-    pub delegation: String,
+    pub delegation: String, 
     #[serde(rename = "delegationManagerImpl")]
     delegation_manager_impl: String,
     #[serde(rename = "avsDirectory")]
