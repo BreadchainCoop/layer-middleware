@@ -44,10 +44,6 @@ workspace = true
 [dev-dependencies]
 serial_test = "3.1.1"
 
-[[bin]]
-name = "start_operator"
-path = "src/start_operator.rs"
-
 
 [[bin]]
 name = "register_layer_operator"
