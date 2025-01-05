@@ -42,7 +42,7 @@ library SetupPaymentsLib {
             rewardsSubmissions[i] = rewardsSubmission;
         }
 
-        rewardsCoordinator.createAVSRewardsSubmission(msg.sender, rewardsSubmissions);
+        rewardsCoordinator.createAVSRewardsSubmission(rewardsSubmissions);
     }
 
     function processClaim(
