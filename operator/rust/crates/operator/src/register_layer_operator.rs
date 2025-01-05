@@ -12,9 +12,11 @@ use eigen_client_elcontracts::{
 use eigen_logging::{get_logger, init_logger, log_level::LogLevel};
 use eigen_utils::{get_provider, get_signer};
 use eyre::Result;
-use hello_world_utils::ecdsastakeregistry::{
-    ECDSAStakeRegistry, ISignatureUtils::SignatureWithSaltAndExpiry,
+use hello_world_utils::{
+    ecdsastakeregistry::ISignatureUtils::SignatureWithSaltAndExpiry,
+    helloworldservicemanager::{HelloWorldServiceManager, IHelloWorldServiceManager::Task},
 };
+
 use layer_utils::{parse_layer_service_manager, parse_stake_registry_address_layer};
 use once_cell::sync::Lazy;
 use rand::RngCore;
@@ -30,7 +32,7 @@ pub const ANVIL_RPC_URL: &str = get_rpc_url();
 static KEY: Lazy<String> =
     Lazy::new(|| env::var("PRIVATE_KEY").expect("failed to retrieve private key"));
 
-async fn register_operator() -> Result<()> {
+async fn register_operator() -> eyre::Result<()> {
     let pr = get_signer(&KEY.clone(), ANVIL_RPC_URL);
     let signer = PrivateKeySigner::from_str(&KEY.clone())?;
 
@@ -38,8 +40,9 @@ async fn register_operator() -> Result<()> {
     let default_strategy = Address::ZERO;
 
     let data = std::fs::read_to_string("contracts/deployments/core/17000.json")?;
-    let delegation_manager_address: Address = serde_json::from_str(&data)?.addresses.delegation.parse()?;
-    let avs_directory_address: Address = serde_json::from_str(&data)?.addresses.avs_directory.parse()?;
+    let el_parsed: EigenLayerData = serde_json::from_str(&data)?;
+    let delegation_manager_address: Address = el_parsed.addresses.delegation.parse()?;
+    let avs_directory_address: Address = el_parsed.addresses.avs_directory.parse()?;
 
     let elcontracts_reader_instance = ELChainReader::new(
         get_logger().clone(),
@@ -78,9 +81,11 @@ async fn register_operator() -> Result<()> {
     let now = Utc::now().timestamp();
     let expiry: U256 = U256::from(now + 3600);
 
+    // Use the correct parse function for LayerMiddleware JSON
     let layer_service_manager_address = parse_layer_service_manager(
         "contracts/deployments/layer-middleware/17000.json",
     )?;
+    println!("layer_service_manager_address: {}", layer_service_manager_address);
     let digest_hash = elcontracts_reader_instance
         .calculate_operator_avs_registration_digest_hash(
             signer.address(),
@@ -89,6 +94,7 @@ async fn register_operator() -> Result<()> {
             expiry,
         )
         .await?;
+    println!("digest_hash: {}", digest_hash);
 
     let signature = signer.sign_hash_sync(&digest_hash)?;
     let operator_signature = SignatureWithSaltAndExpiry {
@@ -97,6 +103,7 @@ async fn register_operator() -> Result<()> {
         expiry: expiry,
     };
 
+    // Use the LayerMiddleware parsing function for stake registry
     let stake_registry_address = parse_stake_registry_address_layer(
         "contracts/deployments/layer-middleware/17000.json",
     )?;
@@ -123,6 +130,7 @@ async fn register_operator() -> Result<()> {
 
     Ok(())
 }
+    
 
 #[tokio::main]
 pub async fn main() {
