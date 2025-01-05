@@ -5,16 +5,12 @@ use alloy::{
 };
 use chrono::Utc;
 use dotenv::dotenv;
-use eigen_client_elcontracts::{
-    reader::ELChainReader,
-    writer::{ELChainWriter, Operator},
-};
+use eigen_client_elcontracts::reader::ELChainReader;
 use eigen_logging::{get_logger, init_logger, log_level::LogLevel};
-use eigen_utils::{get_provider, get_signer};
+use eigen_utils::get_signer;
 use hello_world_utils::ecdsastakeregistry::ECDSAStakeRegistry;
 use hello_world_utils::{
     ecdsastakeregistry::ISignatureUtils::SignatureWithSaltAndExpiry,
-    helloworldservicemanager::{HelloWorldServiceManager, IHelloWorldServiceManager::Task},
     EigenLayerData,
 };
 use hello_world_utils::{parse_layer_service_manager, parse_stake_registry_address_layer};
@@ -38,7 +34,6 @@ async fn register_operator() -> eyre::Result<()> {
     let signer = PrivateKeySigner::from_str(&KEY.clone())?;
 
     let default_slasher = Address::ZERO;
-    let default_strategy = Address::ZERO;
 
     let data = std::fs::read_to_string("contracts/deployments/core/17000.json")?;
     let el_parsed: EigenLayerData = serde_json::from_str(&data)?;
@@ -52,22 +47,6 @@ async fn register_operator() -> eyre::Result<()> {
         avs_directory_address,
         ANVIL_RPC_URL.to_string(),
     );
-    let elcontracts_writer_instance = ELChainWriter::new(
-        delegation_manager_address,
-        default_strategy,
-        Address::ZERO,
-        elcontracts_reader_instance.clone(),
-        ANVIL_RPC_URL.to_string(),
-        KEY.clone(),
-    );
-
-    let operator = Operator {
-        address: signer.address(),
-        earnings_receiver_address: signer.address(),
-        delegation_approver_address: Address::ZERO,
-        staker_opt_out_window_blocks: 0u32,
-        metadata_url: None,
-    };
 
     let is_registered = elcontracts_reader_instance
         .is_operator_registered(signer.address())
