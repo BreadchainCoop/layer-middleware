@@ -11,10 +11,26 @@ use serde::Deserialize;
 
 #[allow(unused)]
 #[derive(Deserialize, Debug)]
+pub struct LayerMiddlewareData {
+    #[serde(rename = "lastUpdate")]
+    last_update: LastUpdate,
+    pub addresses: LayerMiddlewareAddresses,
+}
+
+#[allow(unused)]
+#[derive(Deserialize, Debug)]
 pub struct HelloWorldData {
     #[serde(rename = "lastUpdate")]
     last_update: LastUpdate,
     pub addresses: HelloWorldAddresses,
+}
+
+#[allow(unused)]
+#[derive(Deserialize, Debug)]
+pub struct LayerAVSData {
+    #[serde(rename = "lastUpdate")]
+    last_update: LastUpdate,
+    pub addresses: LayerAVSAddresses,
 }
 
 #[allow(unused)]
@@ -45,6 +61,41 @@ pub struct HelloWorldAddresses {
 
 #[allow(unused)]
 #[derive(Deserialize, Debug)]
+pub struct LayerMiddlewareAddresses {
+    #[serde(rename = "proxyAdmin")]
+    _proxy_admin: String,
+    #[serde(rename = "layerServiceManager")]
+    pub layer_service_manager: String,
+    #[serde(rename = "layerServiceManagerImpl")]
+    layer_service_manager_impl: String,
+    #[serde(rename = "stakeRegistry")]
+    pub stake_registry: String,
+    #[serde(rename = "stakeRegistryImpl")]
+    stake_registry_impl: String,
+    strategy: String,
+    token: String,
+}
+#[allow(unused)]
+#[derive(Deserialize, Debug)]
+pub struct LayerAVSAddresses {
+    #[serde(rename = "proxyAdmin")]
+    _proxy_admin: String,
+    #[serde(rename = "layerServiceManager")]
+    pub layer_service_manager: String,
+    #[serde(rename = "layerServiceManagerImpl")]
+    layer_service_manager_impl: String,
+    #[serde(rename = "stakeRegistry")]
+    pub stake_registry: String,
+    #[serde(rename = "stakeRegistryImpl")]
+    stake_registry_impl: String,
+    strategy: String,
+    token: String,
+    #[serde(rename = "offchainMessageConsumer")]
+    pub offchain_message_consumer: String,
+}
+
+#[allow(unused)]
+#[derive(Deserialize, Debug)]
 pub struct EigenLayerData {
     #[serde(rename = "lastUpdate")]
     last_update: LastUpdate,
@@ -56,7 +107,7 @@ pub struct EigenLayerData {
 pub struct EigenLayerAddresses {
     #[serde(rename = "proxyAdmin")]
     proxy_admin: String,
-    pub delegation: String,
+    pub delegation: String, 
     #[serde(rename = "delegationManagerImpl")]
     delegation_manager_impl: String,
     #[serde(rename = "avsDirectory")]
@@ -79,6 +130,21 @@ pub struct EigenLayerAddresses {
     strategy_beacon: String,
 }
 
+pub fn parse_layer_service_manager(path: &str) -> eyre::Result<Address> {
+    let data = std::fs::read_to_string(path)?;
+    let parsed: LayerMiddlewareData = serde_json::from_str(&data)?;
+    let layer_service_manager_address: Address =
+        parsed.addresses.layer_service_manager.parse()?;
+    Ok(layer_service_manager_address)
+}
+
+pub fn parse_stake_registry_address_layer(path: &str) -> eyre::Result<Address> {
+    let data = std::fs::read_to_string(path)?;
+    let parsed: LayerMiddlewareData = serde_json::from_str(&data)?;
+    let stake_registry_address: Address = parsed.addresses.stake_registry.parse()?;
+    Ok(stake_registry_address)
+}
+
 pub fn parse_hello_world_service_manager(path: &str) -> eyre::Result<Address> {
     let data = std::fs::read_to_string(path)?;
     let parsed: HelloWorldData = serde_json::from_str(&data)?;
@@ -96,7 +162,7 @@ pub fn parse_stake_registry_address(path: &str) -> eyre::Result<Address> {
 
 pub fn parse_offchain_message_consumer_address(path: &str) -> eyre::Result<Address> {
     let data = std::fs::read_to_string(path)?;
-    let parsed: HelloWorldData = serde_json::from_str(&data)?;
+    let parsed: LayerAVSData = serde_json::from_str(&data)?;
     let offchain_message_consumer_address: Address = parsed.addresses.offchain_message_consumer.parse()?;
     Ok(offchain_message_consumer_address)
 }
