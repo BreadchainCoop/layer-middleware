@@ -85,7 +85,7 @@ async fn register_operator() -> eyre::Result<()> {
     let layer_service_manager_address = parse_layer_service_manager(
         "contracts/deployments/layer-middleware/17000.json",
     )?;
-    println!("layer_service_manager_address: {}", layer_service_manager_address);
+    get_logger().info(&format!("layer_service_manager_address: {}", layer_service_manager_address), &"");
     let digest_hash = elcontracts_reader_instance
         .calculate_operator_avs_registration_digest_hash(
             signer.address(),
@@ -94,7 +94,7 @@ async fn register_operator() -> eyre::Result<()> {
             expiry,
         )
         .await?;
-    println!("digest_hash: {}", digest_hash);
+    get_logger().info(&format!("digest_hash: {}", digest_hash), &"");
 
     let signature = signer.sign_hash_sync(&digest_hash)?;
     let operator_signature = SignatureWithSaltAndExpiry {
