@@ -60,7 +60,8 @@ async fn register_operator() -> eyre::Result<()> {
     let salt = FixedBytes::from_slice(&salt);
     let now = Utc::now().timestamp();
     let expiry: U256 = U256::from(now + 3600);
-
+    let data = std::fs::read_to_string("contracts/deployments/layer-middleware/17000.json")?;
+    get_logger().info(&format!("layer-middleware deployment data: {}", data), &"");
     // Use the correct parse function for LayerMiddleware JSON
     let layer_service_manager_address = parse_layer_service_manager(
         "contracts/deployments/layer-middleware/17000.json",
