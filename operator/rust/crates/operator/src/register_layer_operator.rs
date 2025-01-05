@@ -11,13 +11,14 @@ use eigen_client_elcontracts::{
 };
 use eigen_logging::{get_logger, init_logger, log_level::LogLevel};
 use eigen_utils::{get_provider, get_signer};
-use eyre::Result;
+use hello_world_utils::ecdsastakeregistry::ECDSAStakeRegistry;
 use hello_world_utils::{
     ecdsastakeregistry::ISignatureUtils::SignatureWithSaltAndExpiry,
     helloworldservicemanager::{HelloWorldServiceManager, IHelloWorldServiceManager::Task},
+    EigenLayerData,
 };
+use hello_world_utils::{parse_layer_service_manager, parse_stake_registry_address_layer};
 
-use layer_utils::{parse_layer_service_manager, parse_stake_registry_address_layer};
 use once_cell::sync::Lazy;
 use rand::RngCore;
 use std::{env, str::FromStr};
