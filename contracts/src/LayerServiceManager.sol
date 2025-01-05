@@ -10,8 +10,10 @@ import {ECDSAUpgradeable} from
 import {IERC1271Upgradeable} from "@openzeppelin-upgrades/contracts/interfaces/IERC1271Upgradeable.sol";
 import {ILayerServiceManager} from "./ILayerServiceManager.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@eigenlayer/contracts/interfaces/IRewardsCoordinator.sol";
+import {IRewardsCoordinator} from "@eigenlayer/contracts/interfaces/IRewardsCoordinator.sol";
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import {IAllocationManagerTypes} from "eigenlayer-contracts/src/contracts/interfaces/IAllocationManager.sol";
+import {ISignatureUtils} from "eigenlayer-contracts/src/contracts/interfaces/ISignatureUtils.sol";
 
 /**
  * @title Primary entrypoint for procuring services from LayerMiddleware.
@@ -24,14 +26,44 @@ contract LayerServiceManager is ECDSAServiceManagerBase, ILayerServiceManager {
         address _avsDirectory,
         address _stakeRegistry,
         address _rewardsCoordinator,
-        address _delegationManager
-
+        address _delegationManager,
+        address _allocationManager
     )
         ECDSAServiceManagerBase(
             _avsDirectory,
             _stakeRegistry,
             _rewardsCoordinator,
-            _delegationManager
+            _delegationManager,
+            _allocationManager
         )
     {}
+
+    function createOperatorSets(uint32[] memory operatorSetIds) external override {
+        // Implementation logic here
+    }
+
+    function deregisterOperatorFromOperatorSets(
+        address operator,
+        uint32[] calldata operatorSetIds
+    ) external override {
+        // Implementation logic here
+    }
+
+    function registerOperatorToOperatorSets(
+        address operator,
+        uint32[] calldata operatorSetIds,
+        ISignatureUtils.SignatureWithSaltAndExpiry memory operatorSignature
+    ) external override {
+        // Implementation logic here
+    }
+
+    function createAVSRewardsSubmission(IRewardsCoordinator.RewardsSubmission[] calldata rewardsSubmissions) external override {
+        // Implementation logic here
+    }
+
+    function slashOperator(
+        IAllocationManagerTypes.SlashingParams memory params
+    ) external override {
+        // Implementation logic here
+    }
 }

@@ -5,7 +5,7 @@ import {Script} from "forge-std/Script.sol";
 import {HelloWorldDeploymentLib} from "./utils/HelloWorldDeploymentLib.sol";
 import {CoreDeploymentLib} from "./utils/CoreDeploymentLib.sol";
 import {SetupPaymentsLib} from "./utils/SetupPaymentsLib.sol";
-import {IRewardsCoordinator} from "@eigenlayer/contracts/interfaces/IRewardsCoordinator.sol";
+import {IRewardsCoordinator,IRewardsCoordinatorTypes} from "@eigenlayer/contracts/interfaces/IRewardsCoordinator.sol";
 
 contract SetupPayments is Script {
     struct PaymentInfo {
@@ -46,7 +46,7 @@ contract SetupPayments is Script {
         createAVSRewardsSubmissions(info.numPayments, info.amountPerPayment, info.duration, info.startTimestamp);
         submitPaymentRoot(info.earners, info.endTimestamp, uint32(info.numPayments), uint32(info.amountPerPayment));
 
-        IRewardsCoordinator.EarnerTreeMerkleLeaf memory earnerLeaf = IRewardsCoordinator.EarnerTreeMerkleLeaf({
+        IRewardsCoordinatorTypes.EarnerTreeMerkleLeaf memory earnerLeaf = IRewardsCoordinatorTypes.EarnerTreeMerkleLeaf({
             earner: info.earners[info.indexToProve],
             earnerTokenRoot: info.earnerTokenRoots[info.indexToProve]
         });

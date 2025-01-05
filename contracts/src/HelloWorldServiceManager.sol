@@ -10,8 +10,11 @@ import {ECDSAUpgradeable} from
 import {IERC1271Upgradeable} from "@openzeppelin-upgrades/contracts/interfaces/IERC1271Upgradeable.sol";
 import {IHelloWorldServiceManager} from "./IHelloWorldServiceManager.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@eigenlayer/contracts/interfaces/IRewardsCoordinator.sol";
+import {IRewardsCoordinator} from "@eigenlayer/contracts/interfaces/IRewardsCoordinator.sol";
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import {IAllocationManagerTypes} from "eigenlayer-contracts/src/contracts/interfaces/IAllocationManager.sol";
+import {ISignatureUtils} from "eigenlayer-contracts/src/contracts/interfaces/ISignatureUtils.sol";
+import {IAVSRegistrar} from "eigenlayer-contracts/src/contracts/interfaces/IAVSRegistrar.sol";
 
 /**
  * @title Primary entrypoint for procuring services from HelloWorld.
@@ -45,7 +48,6 @@ contract HelloWorldServiceManager is ECDSAServiceManagerBase, IHelloWorldService
         address _rewardsCoordinator,
         address _delegationManager,
         address _allocationManager
-
     )
         ECDSAServiceManagerBase(
             _avsDirectory,
@@ -54,11 +56,7 @@ contract HelloWorldServiceManager is ECDSAServiceManagerBase, IHelloWorldService
             _delegationManager,
             _allocationManager
         )
-    {
-        //  _initializePauser(_pauserRegistry, UNPAUSE_ALL);
-
-    }
-
+    {}
 
     /* FUNCTIONS */
     // NOTE: this function creates new task, assigns it a taskId
@@ -106,5 +104,34 @@ contract HelloWorldServiceManager is ECDSAServiceManagerBase, IHelloWorldService
 
         // emitting event
         emit TaskResponded(referenceTaskIndex, task, msg.sender);
+    }
+
+    function createOperatorSets(uint32[] memory operatorSetIds) external override {
+        // Implementation logic here
+    }
+
+    function deregisterOperatorFromOperatorSets(
+        address operator,
+        uint32[] calldata operatorSetIds
+    ) external override {
+        // Implementation logic here
+    }
+
+    function registerOperatorToOperatorSets(
+        address operator,
+        uint32[] calldata operatorSetIds,
+        ISignatureUtils.SignatureWithSaltAndExpiry memory operatorSignature
+    ) external override {
+        // Implementation logic here
+    }
+
+    function createAVSRewardsSubmission(IRewardsCoordinator.RewardsSubmission[] calldata rewardsSubmissions) external override {
+        // Implementation logic here
+    }
+
+    function slashOperator(
+        IAllocationManagerTypes.SlashingParams memory params
+    ) external override {
+        // Implementation logic here
     }
 }
