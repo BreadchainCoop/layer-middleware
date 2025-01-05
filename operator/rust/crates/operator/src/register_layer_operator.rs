@@ -12,8 +12,10 @@ use eigen_client_elcontracts::{
 use eigen_logging::{get_logger, init_logger, log_level::LogLevel};
 use eigen_utils::{get_provider, get_signer};
 use eyre::Result;
-use hello_world_utils::ecdsastakeregistry::{ECDSAStakeRegistry, ISignatureUtils::SignatureWithSaltAndExpiry};
-use hello_world_utils::{parse_hello_world_service_manager, parse_stake_registry_address, EigenLayerData};
+use hello_world_utils::ecdsastakeregistry::{
+    ECDSAStakeRegistry, ISignatureUtils::SignatureWithSaltAndExpiry,
+};
+use layer_utils::{parse_layer_service_manager, parse_stake_registry_address_layer};
 use once_cell::sync::Lazy;
 use rand::RngCore;
 use std::{env, str::FromStr};
@@ -21,7 +23,7 @@ use std::{env, str::FromStr};
 pub const fn get_rpc_url() -> &'static str {
     match option_env!("TESTNET_RPC_URL") {
         Some(url) => url,
-        None => "http://ethereum:8545"
+        None => "http://ethereum:8545",
     }
 }
 pub const ANVIL_RPC_URL: &str = get_rpc_url();
@@ -32,13 +34,12 @@ async fn register_operator() -> Result<()> {
     let pr = get_signer(&KEY.clone(), ANVIL_RPC_URL);
     let signer = PrivateKeySigner::from_str(&KEY.clone())?;
 
-    let default_slasher = Address::ZERO; // We don't need slasher for our example.
-    let default_strategy = Address::ZERO; // We don't need strategy for our example.
+    let default_slasher = Address::ZERO;
+    let default_strategy = Address::ZERO;
 
     let data = std::fs::read_to_string("contracts/deployments/core/17000.json")?;
-    let el_parsed: EigenLayerData = serde_json::from_str(&data)?;
-    let delegation_manager_address: Address = el_parsed.addresses.delegation.parse()?;
-    let avs_directory_address: Address = el_parsed.addresses.avs_directory.parse()?;
+    let delegation_manager_address: Address = serde_json::from_str(&data)?.addresses.delegation.parse()?;
+    let avs_directory_address: Address = serde_json::from_str(&data)?.addresses.avs_directory.parse()?;
 
     let elcontracts_reader_instance = ELChainReader::new(
         get_logger().clone(),
@@ -77,13 +78,13 @@ async fn register_operator() -> Result<()> {
     let now = Utc::now().timestamp();
     let expiry: U256 = U256::from(now + 3600);
 
-    let hello_world_service_manager = parse_hello_world_service_manager("contracts/deployments/layer-middleware/17000.json")?;
-    let layer_middleware_contract_address = hello_world_service_manager;
-
+    let layer_service_manager_address = parse_layer_service_manager(
+        "contracts/deployments/layer-middleware/17000.json",
+    )?;
     let digest_hash = elcontracts_reader_instance
         .calculate_operator_avs_registration_digest_hash(
             signer.address(),
-            layer_middleware_contract_address,
+            layer_service_manager_address,
             salt,
             expiry,
         )
@@ -95,9 +96,12 @@ async fn register_operator() -> Result<()> {
         salt,
         expiry: expiry,
     };
-    let stake_registry_address =
-        parse_stake_registry_address("contracts/deployments/layer-middleware/17000.json")?;
-    let contract_ecdsa_stake_registry = ECDSAStakeRegistry::new(stake_registry_address, &pr);
+
+    let stake_registry_address = parse_stake_registry_address_layer(
+        "contracts/deployments/layer-middleware/17000.json",
+    )?;
+    let contract_ecdsa_stake_registry =
+        ECDSAStakeRegistry::new(stake_registry_address, &pr);
     let registeroperator_details_call = contract_ecdsa_stake_registry
         .registerOperatorWithSignature(operator_signature, signer.clone().address())
         .gas(500000);
