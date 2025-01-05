@@ -27,6 +27,14 @@ pub struct HelloWorldData {
 
 #[allow(unused)]
 #[derive(Deserialize, Debug)]
+pub struct LayerAVSData {
+    #[serde(rename = "lastUpdate")]
+    last_update: LastUpdate,
+    pub addresses: LayerAVSAddresses,
+}
+
+#[allow(unused)]
+#[derive(Deserialize, Debug)]
 struct LastUpdate {
     timestamp: String,
     block_number: String,
@@ -66,6 +74,24 @@ pub struct LayerMiddlewareAddresses {
     stake_registry_impl: String,
     strategy: String,
     token: String,
+}
+#[allow(unused)]
+#[derive(Deserialize, Debug)]
+pub struct LayerAVSAddresses {
+    #[serde(rename = "proxyAdmin")]
+    _proxy_admin: String,
+    #[serde(rename = "layerServiceManager")]
+    pub layer_service_manager: String,
+    #[serde(rename = "layerServiceManagerImpl")]
+    layer_service_manager_impl: String,
+    #[serde(rename = "stakeRegistry")]
+    pub stake_registry: String,
+    #[serde(rename = "stakeRegistryImpl")]
+    stake_registry_impl: String,
+    strategy: String,
+    token: String,
+    #[serde(rename = "offchainMessageConsumer")]
+    pub offchain_message_consumer: String,
 }
 
 #[allow(unused)]
@@ -136,7 +162,7 @@ pub fn parse_stake_registry_address(path: &str) -> eyre::Result<Address> {
 
 pub fn parse_offchain_message_consumer_address(path: &str) -> eyre::Result<Address> {
     let data = std::fs::read_to_string(path)?;
-    let parsed: HelloWorldData = serde_json::from_str(&data)?;
+    let parsed: LayerAVSData = serde_json::from_str(&data)?;
     let offchain_message_consumer_address: Address = parsed.addresses.offchain_message_consumer.parse()?;
     Ok(offchain_message_consumer_address)
 }
