@@ -43,7 +43,7 @@ contract CoreDeploymentLibTest is Test {
         configData =
             CoreDeploymentLib.readDeploymentConfigValues("test/mockData/config/core/", 1337);
         CoreDeploymentLib.DeploymentData memory data =
-            CoreDeploymentLib.deployContracts(proxyAdmin, configData);
+            CoreDeploymentLib.deployContracts(address(this), proxyAdmin, configData);
 
         assertTrue(data.delegationManager != address(0), "DelegationManager not deployed");
         assertTrue(data.avsDirectory != address(0), "AVSDirectory not deployed");
@@ -54,7 +54,7 @@ contract CoreDeploymentLibTest is Test {
         configData =
             CoreDeploymentLib.readDeploymentConfigValues("test/mockData/config/core/", 1337);
         CoreDeploymentLib.DeploymentData memory data =
-            CoreDeploymentLib.deployContracts(proxyAdmin, configData);
+            CoreDeploymentLib.deployContracts(address(this), proxyAdmin, configData);
 
         string memory scratchPath = "test/mockData/scratch/";
         CoreDeploymentLib.writeDeploymentJson(scratchPath, block.chainid, data);
@@ -67,7 +67,7 @@ contract CoreDeploymentLibTest is Test {
         configData =
             CoreDeploymentLib.readDeploymentConfigValues("test/mockData/config/core/", 1337);
         CoreDeploymentLib.DeploymentData memory initialData =
-            CoreDeploymentLib.deployContracts(proxyAdmin, configData);
+            CoreDeploymentLib.deployContracts(address(this), proxyAdmin, configData);
 
         string memory scratchPath = "test/mockData/scratch/";
 

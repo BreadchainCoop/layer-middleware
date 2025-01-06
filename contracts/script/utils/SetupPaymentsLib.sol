@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import {IRewardsCoordinator} from "@eigenlayer/contracts/interfaces/IRewardsCoordinator.sol";
+import {IRewardsCoordinator, IRewardsCoordinatorTypes} from "eigenlayer-contracts/src/contracts/interfaces/IRewardsCoordinator.sol";
 import {IStrategy} from "eigenlayer-contracts/src/contracts/interfaces/IStrategyManager.sol";
 import {Vm} from "forge-std/Vm.sol";
 
@@ -23,19 +23,19 @@ library SetupPaymentsLib {
         uint32 duration,
         uint32 startTimestamp
     ) internal {
-        IRewardsCoordinator.RewardsSubmission[] memory rewardsSubmissions = new IRewardsCoordinator.RewardsSubmission[](numPayments);
+        IRewardsCoordinatorTypes.RewardsSubmission[] memory rewardsSubmissions = new IRewardsCoordinatorTypes.RewardsSubmission[](numPayments);
         for (uint256 i = 0; i < numPayments; i++) {
-            IRewardsCoordinator.StrategyAndMultiplier[] memory strategiesAndMultipliers = new IRewardsCoordinator.StrategyAndMultiplier[](1);
-            strategiesAndMultipliers[0] = IRewardsCoordinator.StrategyAndMultiplier({
+            IRewardsCoordinatorTypes.StrategyAndMultiplier[] memory strategiesAndMultipliers = new IRewardsCoordinatorTypes.StrategyAndMultiplier[](1);
+            strategiesAndMultipliers[0] = IRewardsCoordinatorTypes.StrategyAndMultiplier({
                 strategy: IStrategy(strategy),
                 multiplier: 10000
             });
 
-            IRewardsCoordinator.RewardsSubmission memory rewardsSubmission = IRewardsCoordinator.RewardsSubmission({
+            IRewardsCoordinatorTypes.RewardsSubmission memory rewardsSubmission = IRewardsCoordinatorTypes.RewardsSubmission({
                 strategiesAndMultipliers: strategiesAndMultipliers,
                 token: IStrategy(strategy).underlyingToken(),
                 amount: amountPerPayment,
-                startTimestamp: startTimestamp ,
+                startTimestamp: startTimestamp,
                 duration: duration
             });
 
@@ -50,7 +50,7 @@ library SetupPaymentsLib {
         string memory filePath,
         uint256 indexToProve,
         address recipient,
-        IRewardsCoordinator.EarnerTreeMerkleLeaf memory earnerLeaf,
+        IRewardsCoordinatorTypes.EarnerTreeMerkleLeaf memory earnerLeaf,
         uint256 NUM_TOKEN_EARNINGS,
         address strategy
     ) internal {
@@ -63,10 +63,10 @@ library SetupPaymentsLib {
         bytes[] memory tokenProofs = new bytes[](NUM_TOKEN_EARNINGS);
         tokenProofs[0] = tokenProof;
 
-        IRewardsCoordinator.TokenTreeMerkleLeaf[] memory tokenLeaves = new IRewardsCoordinator.TokenTreeMerkleLeaf[](NUM_TOKEN_EARNINGS);
+        IRewardsCoordinatorTypes.TokenTreeMerkleLeaf[] memory tokenLeaves = new IRewardsCoordinatorTypes.TokenTreeMerkleLeaf[](NUM_TOKEN_EARNINGS);
         tokenLeaves[0] = defaultTokenLeaf(100, strategy);
 
-        IRewardsCoordinator.RewardsMerkleClaim memory claim = IRewardsCoordinator.RewardsMerkleClaim({
+        IRewardsCoordinatorTypes.RewardsMerkleClaim memory claim = IRewardsCoordinatorTypes.RewardsMerkleClaim({
             rootIndex: 0,
             earnerIndex: uint32(indexToProve),
             earnerTreeProof: proof,
@@ -82,7 +82,7 @@ library SetupPaymentsLib {
     function submitRoot(
         IRewardsCoordinator rewardsCoordinator,
         bytes32[] memory tokenLeaves,
-        IRewardsCoordinator.EarnerTreeMerkleLeaf[] memory earnerLeaves,
+        IRewardsCoordinatorTypes.EarnerTreeMerkleLeaf[] memory earnerLeaves,
         address strategy,
         uint32 rewardsCalculationEndTimestamp,
          uint256 NUM_PAYMENTS,
@@ -96,7 +96,7 @@ library SetupPaymentsLib {
     function createPaymentRoot(
         IRewardsCoordinator rewardsCoordinator,
         bytes32[] memory tokenLeaves,
-        IRewardsCoordinator.EarnerTreeMerkleLeaf[] memory earnerLeaves,
+        IRewardsCoordinatorTypes.EarnerTreeMerkleLeaf[] memory earnerLeaves,
         uint256 NUM_PAYMENTS,
         uint256 NUM_TOKEN_EARNINGS,
         address strategy,
@@ -117,10 +117,10 @@ library SetupPaymentsLib {
     function createEarnerLeaves(
         address[] calldata earners,
         bytes32[] memory tokenLeaves
-    ) public returns (IRewardsCoordinator.EarnerTreeMerkleLeaf[] memory) {
-        IRewardsCoordinator.EarnerTreeMerkleLeaf[] memory leaves = new IRewardsCoordinator.EarnerTreeMerkleLeaf[](earners.length);
+    ) public returns (IRewardsCoordinatorTypes.EarnerTreeMerkleLeaf[] memory) {
+        IRewardsCoordinatorTypes.EarnerTreeMerkleLeaf[] memory leaves = new IRewardsCoordinatorTypes.EarnerTreeMerkleLeaf[](earners.length);
         for (uint256 i = 0; i < earners.length; i++) {
-            leaves[i] = IRewardsCoordinator.EarnerTreeMerkleLeaf({
+            leaves[i] = IRewardsCoordinatorTypes.EarnerTreeMerkleLeaf({
                 earner: earners[i],
                 earnerTokenRoot: createTokenRoot(tokenLeaves)
             });
@@ -140,7 +140,7 @@ library SetupPaymentsLib {
     ) internal returns (bytes32[] memory) {
         bytes32[] memory leaves = new bytes32[](NUM_TOKEN_EARNINGS);
         for (uint256 i = 0; i < NUM_TOKEN_EARNINGS; i++) {
-            IRewardsCoordinator.TokenTreeMerkleLeaf memory leaf = defaultTokenLeaf(TOKEN_EARNINGS, strategy);
+            IRewardsCoordinatorTypes.TokenTreeMerkleLeaf memory leaf = defaultTokenLeaf(TOKEN_EARNINGS, strategy);
             leaves[i] = rewardsCoordinator.calculateTokenLeafHash(leaf);
         }
         return leaves;
@@ -149,8 +149,8 @@ library SetupPaymentsLib {
     function defaultTokenLeaf(
         uint256 TOKEN_EARNINGS,
         address strategy
-    ) internal view returns (IRewardsCoordinator.TokenTreeMerkleLeaf memory) {
-        IRewardsCoordinator.TokenTreeMerkleLeaf memory leaf = IRewardsCoordinator.TokenTreeMerkleLeaf({
+    ) internal view returns (IRewardsCoordinatorTypes.TokenTreeMerkleLeaf memory) {
+        IRewardsCoordinatorTypes.TokenTreeMerkleLeaf memory leaf = IRewardsCoordinatorTypes.TokenTreeMerkleLeaf({
             token: IStrategy(strategy).underlyingToken(),
             cumulativeEarnings: TOKEN_EARNINGS
         });

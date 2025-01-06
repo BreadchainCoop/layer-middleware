@@ -45,7 +45,11 @@ library LayerMiddlewareDeploymentLib {
             address(new ECDSAStakeRegistry(IDelegationManager(core.delegationManager)));
         address layerServiceManagerImpl = address(
             new LayerServiceManager(
-                core.avsDirectory, result.stakeRegistry, core.rewardsCoordinator, core.delegationManager
+                core.avsDirectory,
+                result.stakeRegistry,
+                core.rewardsCoordinator,
+                core.delegationManager,
+                core.allocationManager
             )
         );
         // Upgrade contracts
