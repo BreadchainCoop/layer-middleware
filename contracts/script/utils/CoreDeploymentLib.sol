@@ -449,6 +449,28 @@ library CoreDeploymentLib {
             );
     }
 
+    function readFirstAddressSet(string memory json, DeploymentData memory data) internal returns (DeploymentData memory) {
+        data.strategyFactory = json.readAddress(".addresses.strategyFactory");
+        data.strategyManager = json.readAddress(".addresses.strategyManager");
+        data.eigenPodManager = json.readAddress(".addresses.eigenPodManager");
+        data.delegationManager = json.readAddress(".addresses.delegation");
+        return data;
+    }
+
+    function readSecondAddressSet(string memory json, DeploymentData memory data) internal returns (DeploymentData memory) {
+        data.avsDirectory = json.readAddress(".addresses.avsDirectory");
+        
+        // Try to read rewardsCoordinator
+        try vm.parseJson(json, ".addresses.rewardsCoordinator") returns (bytes memory parsed) {
+            if (parsed.length > 0) {
+                data.rewardsCoordinator = abi.decode(parsed, (address));
+            }
+        } catch {}
+
+        data.allocationManager = json.readAddress(".addresses.allocationManager");
+        return data;
+    }
+
     function readDeploymentJson(
         string memory directoryPath,
         uint256 chainId
@@ -461,28 +483,16 @@ library CoreDeploymentLib {
     }
 
     function readDeploymentJson(
-        string memory path,
+        string memory directoryPath,
         string memory fileName
     ) internal returns (DeploymentData memory) {
-        string memory pathToFile = string.concat(path, fileName);
-
+        string memory pathToFile = string.concat(directoryPath, fileName);
         require(vm.exists(pathToFile), "Deployment file does not exist");
-
         string memory json = vm.readFile(pathToFile);
 
         DeploymentData memory data;
-        data.strategyFactory = json.readAddress(".addresses.strategyFactory");
-        data.strategyManager = json.readAddress(".addresses.strategyManager");
-        data.eigenPodManager = json.readAddress(".addresses.eigenPodManager");
-        data.delegationManager = json.readAddress(".addresses.delegation");
-        data.avsDirectory = json.readAddress(".addresses.avsDirectory");
-        // data.rewardsCoordinator = json.readAddress(
-        //     ".addresses.rewardsCoordinator"
-        // );
-        data.allocationManager = json.readAddress(
-            ".addresses.allocationManager"
-        );
-
+        data = readFirstAddressSet(json, data);
+        data = readSecondAddressSet(json, data);
         return data;
     }
 
