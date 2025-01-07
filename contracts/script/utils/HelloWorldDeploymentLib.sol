@@ -54,7 +54,7 @@ library HelloWorldDeploymentLib {
         );
         // Upgrade contracts
         bytes memory upgradeCall = abi.encodeCall(
-            ECDSAStakeRegistry.initialize, (result.helloWorldServiceManager, 0, quorum)
+            ECDSAStakeRegistry.initialize, (result.helloWorldServiceManager, 0, quorum, msg.sender)
         );
         UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, upgradeCall);
         UpgradeableProxyLib.upgrade(result.helloWorldServiceManager, helloWorldServiceManagerImpl);
