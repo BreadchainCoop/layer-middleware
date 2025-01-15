@@ -15,7 +15,7 @@ import {Quorum} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistryE
 import {UpgradeableProxyLib} from "./UpgradeableProxyLib.sol";
 import {CoreDeploymentLib} from "./CoreDeploymentLib.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {LayerAVSRegistar} from "../../src/LayerAVSRegistar.sol";
+import {LayerAVSRegistrar} from "../../src/LayerAVSRegistrar.sol";
 
 library LayerMiddlewareDeploymentLib {
     using stdJson for *;
@@ -29,7 +29,7 @@ library LayerMiddlewareDeploymentLib {
         address stakeRegistry;
         address strategy;
         address token;
-        address avsRegistar;
+        address avsRegistrar;
     }
 
     function deployContracts(
@@ -61,9 +61,9 @@ library LayerMiddlewareDeploymentLib {
         UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, upgradeCall);
         UpgradeableProxyLib.upgrade(result.layerServiceManager, layerServiceManagerImpl);
 
-        // Dummy AVSRegistar deployment for now
-        address avsRegistar = new LayerAVSRegistar();
-        result.avsRegistar = avsRegistar;
+        // Dummy AVSRegistrar deployment for now
+        address avsRegistrar = address(new LayerAVSRegistrar());
+        result.avsRegistrar = avsRegistrar;
 
         return result;
     }
@@ -90,7 +90,7 @@ library LayerMiddlewareDeploymentLib {
         data.stakeRegistry = json.readAddress(".contracts.stakeRegistry");
         data.strategy = json.readAddress(".contracts.strategy");
         data.token = json.readAddress(".contracts.token");
-        data.avsRegistar = json.readAddress(".contracts.avsRegistar");
+        data.avsRegistrar = json.readAddress(".contracts.avsRegistrar");
 
         return data;
     }
@@ -155,8 +155,8 @@ library LayerMiddlewareDeploymentLib {
             data.strategy.toHexString(),
             '","token":"',
             data.token.toHexString(),
-            '","avsRegistar":"',
-            data.avsRegistar.toHexString(),
+            '","avsRegistrar":"',
+            data.avsRegistrar.toHexString(),
              '"}'
         );
     }
