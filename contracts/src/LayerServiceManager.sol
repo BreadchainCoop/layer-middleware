@@ -40,6 +40,13 @@ contract LayerServiceManager is ECDSAServiceManagerBase, ILayerServiceManager {
         )
     {}
 
+    function initialize(
+        address _initialOwner,
+        address _rewardsInitiator
+    ) public initializer {
+        __ServiceManagerBase_init(_initialOwner, _rewardsInitiator);
+    }
+
     /// NOTE: All OperatorSet functions are `onlyOwner`
     /// although `createOperatorSets` SHOULD be `onlyRegistryCoordinator`
     /// and `addStrategyToOperatorSet`, `removeStrategiesFromOperatorSet` SHOULD be `onlyStakeRegistry`

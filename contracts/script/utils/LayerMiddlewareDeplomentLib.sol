@@ -55,11 +55,14 @@ library LayerMiddlewareDeploymentLib {
             )
         );
         // Upgrade contracts
-        bytes memory upgradeCall = abi.encodeCall(
+        bytes memory stakeRegistryUpgradeCall = abi.encodeCall(
             ECDSAStakeRegistry.initialize, (result.layerServiceManager, 0, quorum, msg.sender)
         );
-        UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, upgradeCall);
-        UpgradeableProxyLib.upgrade(result.layerServiceManager, layerServiceManagerImpl);
+        bytes memory layerServiceManagerUpgradeCall = abi.encodeCall(
+            LayerServiceManager.initialize, (msg.sender, msg.sender)
+        );
+        UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, stakeRegistryUpgradeCall);
+        UpgradeableProxyLib.upgradeAndCall(result.layerServiceManager, layerServiceManagerImpl, layerServiceManagerUpgradeCall);
 
         // Dummy AVSRegistrar deployment for now
         address avsRegistrar = address(new LayerAVSRegistrar());
