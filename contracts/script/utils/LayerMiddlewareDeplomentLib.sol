@@ -15,6 +15,7 @@ import {Quorum} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistryE
 import {UpgradeableProxyLib} from "./UpgradeableProxyLib.sol";
 import {CoreDeploymentLib} from "./CoreDeploymentLib.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {LayerAVSRegistar} from "../../src/LayerAVSRegistar.sol";
 
 library LayerMiddlewareDeploymentLib {
     using stdJson for *;
@@ -28,6 +29,7 @@ library LayerMiddlewareDeploymentLib {
         address stakeRegistry;
         address strategy;
         address token;
+        address avsRegistar;
     }
 
     function deployContracts(
@@ -59,6 +61,10 @@ library LayerMiddlewareDeploymentLib {
         UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, upgradeCall);
         UpgradeableProxyLib.upgrade(result.layerServiceManager, layerServiceManagerImpl);
 
+        // Dummy AVSRegistar deployment for now
+        address avsRegistar = new LayerAVSRegistar();
+        result.avsRegistar = avsRegistar;
+
         return result;
     }
 
@@ -84,6 +90,7 @@ library LayerMiddlewareDeploymentLib {
         data.stakeRegistry = json.readAddress(".contracts.stakeRegistry");
         data.strategy = json.readAddress(".contracts.strategy");
         data.token = json.readAddress(".contracts.token");
+        data.avsRegistar = json.readAddress(".contracts.avsRegistar");
 
         return data;
     }
@@ -148,6 +155,8 @@ library LayerMiddlewareDeploymentLib {
             data.strategy.toHexString(),
             '","token":"',
             data.token.toHexString(),
+            '","avsRegistar":"',
+            data.avsRegistar.toHexString(),
              '"}'
         );
     }
