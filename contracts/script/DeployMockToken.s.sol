@@ -27,7 +27,7 @@ contract DeployMockTokenScript is Script {
         );
 
         vm.stopBroadcast();
-
-        console.log("MockToken deployed at:", address(mockToken));
+        string memory json = vm.serializeAddress("deployment", "MockToken", address(mockToken));
+        vm.writeJson(json, string.concat("./deployments/layer-middleware/mockToken", vm.toString(block.chainid), ".json"));
     }
 }
