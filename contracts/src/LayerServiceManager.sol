@@ -40,19 +40,33 @@ contract LayerServiceManager is ECDSAServiceManagerBase, ILayerServiceManager {
         )
     {}
 
+    function initialize(
+        address _initialOwner,
+        address _rewardsInitiator
+    ) public initializer {
+        __ServiceManagerBase_init(_initialOwner, _rewardsInitiator);
+    }
+
+    /// NOTE: All OperatorSet functions are `onlyOwner`
+    /// although `createOperatorSets` SHOULD be `onlyRegistryCoordinator`
+    /// and `addStrategyToOperatorSet`, `removeStrategiesFromOperatorSet` SHOULD be `onlyStakeRegistry`
+    /// ---
+    /// There is a discrepency between `ServiceManagerBase.sol` and and `ECDSAServiceManagerBase.sol`
+    /// and between `StakeRegistry.sol` and `ECDSAStakeRegistry.sol`
+
     /// @notice Creates new operator sets with the given parameters
-    function createOperatorSets(IAllocationManager.CreateSetParams[] memory params) external {
-        // Implementation logic here
+    function createOperatorSets(IAllocationManager.CreateSetParams[] memory params) external onlyOwner {
+        IAllocationManager(allocationManager).createOperatorSets(address(this), params);
     }
 
     /// @notice Adds strategies to an existing operator set
-    function addStrategyToOperatorSet(uint32 operatorSetId, IStrategy[] memory strategies) external {
-        // Implementation logic here
+    function addStrategyToOperatorSet(uint32 operatorSetId, IStrategy[] memory strategies) external onlyOwner {
+        IAllocationManager(allocationManager).addStrategiesToOperatorSet(address(this), operatorSetId, strategies);
     }
 
     /// @notice Removes strategies from an existing operator set
-    function removeStrategiesFromOperatorSet(uint32 operatorSetId, IStrategy[] memory strategies) external {
-        // Implementation logic here
+    function removeStrategiesFromOperatorSet(uint32 operatorSetId, IStrategy[] memory strategies) external onlyOwner {
+        IAllocationManager(allocationManager).removeStrategiesFromOperatorSet(address(this), operatorSetId, strategies);
     }
 
     /// @notice Deregisters an operator from operator sets
