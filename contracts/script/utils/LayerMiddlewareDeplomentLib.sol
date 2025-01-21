@@ -15,7 +15,6 @@ import {Quorum} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistryE
 import {UpgradeableProxyLib} from "./UpgradeableProxyLib.sol";
 import {CoreDeploymentLib} from "./CoreDeploymentLib.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {LayerAVSRegistrar} from "../../src/LayerAVSRegistrar.sol";
 
 library LayerMiddlewareDeploymentLib {
     using stdJson for *;
@@ -29,7 +28,6 @@ library LayerMiddlewareDeploymentLib {
         address stakeRegistry;
         address strategy;
         address token;
-        address avsRegistrar;
     }
 
     function deployContracts(
@@ -55,18 +53,11 @@ library LayerMiddlewareDeploymentLib {
             )
         );
         // Upgrade contracts
-        bytes memory stakeRegistryUpgradeCall = abi.encodeCall(
+        bytes memory upgradeCall = abi.encodeCall(
             ECDSAStakeRegistry.initialize, (result.layerServiceManager, 0, quorum, msg.sender)
         );
-        bytes memory layerServiceManagerUpgradeCall = abi.encodeCall(
-            LayerServiceManager.initialize, (msg.sender, msg.sender)
-        );
-        UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, stakeRegistryUpgradeCall);
-        UpgradeableProxyLib.upgradeAndCall(result.layerServiceManager, layerServiceManagerImpl, layerServiceManagerUpgradeCall);
-
-        // Dummy AVSRegistrar deployment for now
-        address avsRegistrar = address(new LayerAVSRegistrar());
-        result.avsRegistrar = avsRegistrar;
+        UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, upgradeCall);
+        UpgradeableProxyLib.upgrade(result.layerServiceManager, layerServiceManagerImpl);
 
         return result;
     }
@@ -93,7 +84,6 @@ library LayerMiddlewareDeploymentLib {
         data.stakeRegistry = json.readAddress(".contracts.stakeRegistry");
         data.strategy = json.readAddress(".contracts.strategy");
         data.token = json.readAddress(".contracts.token");
-        data.avsRegistrar = json.readAddress(".contracts.avsRegistrar");
 
         return data;
     }
@@ -158,8 +148,6 @@ library LayerMiddlewareDeploymentLib {
             data.strategy.toHexString(),
             '","token":"',
             data.token.toHexString(),
-            '","avsRegistrar":"',
-            data.avsRegistrar.toHexString(),
              '"}'
         );
     }
