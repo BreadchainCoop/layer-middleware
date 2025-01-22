@@ -18,7 +18,7 @@ import {
     Quorum,
     StrategyParams,
     IStrategy
-} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistryEventsAndErrors.sol";
+} from "../src/IECDSAStakeRegistryEventsAndErrors.sol";
 
 contract LayerMiddlewareDeployer is Script {
     using CoreDeploymentLib for *;
