@@ -3,7 +3,7 @@ pragma solidity ^0.8.27;
 
 import {IDelegationManager} from "eigenlayer-contracts/src/contracts/interfaces/IDelegationManager.sol";
 import {CheckpointsUpgradeable} from "@openzeppelin-upgrades/contracts/utils/CheckpointsUpgradeable.sol";
-import {ECDSAStakeRegistryEventsAndErrors, Quorum, StrategyParams} from "eigenlayer-middleware/src/interfaces/IECDSAStakeRegistryEventsAndErrors.sol";
+import {ECDSAStakeRegistryEventsAndErrors, Quorum, StrategyParams} from "./IECDSAStakeRegistryEventsAndErrors.sol";
 
 abstract contract ECDSAStakeRegistryStorage is
     ECDSAStakeRegistryEventsAndErrors
@@ -17,8 +17,11 @@ abstract contract ECDSAStakeRegistryStorage is
     /// @notice The size of the current operator set
     uint256 internal _totalOperators;
 
-    /// @notice Stores the current quorum configuration
-    Quorum internal _quorum;
+    /// @notice Stores multiple quorum configurations. The owner chooses which one is active.
+    Quorum[] internal _quorums;
+
+    /// @notice The index of the currently active quorum.
+    uint256 internal _currentQuorumIndex;
 
     /// @notice Specifies the weight required to become an operator
     uint256 internal _minimumWeight;
@@ -26,7 +29,7 @@ abstract contract ECDSAStakeRegistryStorage is
     /// @notice Holds the address of the service manager
     address internal _serviceManager;
 
-    /// @notice Defines the duration after which the stake's weight expires.
+    /// @notice Defines the duration after which the stake's weight expires (not used in this example).
     uint256 internal _stakeExpiry;
 
     /// @notice Maps an operator to their signing key history using checkpoints
@@ -54,5 +57,5 @@ abstract contract ECDSAStakeRegistryStorage is
     // slither-disable-next-line shadowing-state
     /// @dev Reserves storage slots for future upgrades
     // solhint-disable-next-line
-    uint256[40] private __gap;
+    uint256[39] private __gap;
 }
