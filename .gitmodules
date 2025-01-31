@@ -4,4 +4,4 @@
 [submodule "contracts/lib/eigenlayer-middleware"]
 	path = contracts/lib/eigenlayer-middleware
 	url = https://github.com/BreadchainCoop/eigenlayer-middleware
-	branch = dev 
+	branch = mainnet-rewards-v2
