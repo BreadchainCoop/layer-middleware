@@ -15,12 +15,11 @@ import {StrategyManager} from "@eigenlayer/contracts/core/StrategyManager.sol";
 
 
 import {
-    Quorum,
-    StrategyParams,
+    IECDSAStakeRegistryTypes,
     IStrategy
-} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistryEventsAndErrors.sol";
+} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistry.sol";
 
-contract LayerMiddlewareDeployer is Script {
+contract LayerMiddlewareDeployer is Script, IECDSAStakeRegistryTypes {
     using CoreDeploymentLib for *;
     using UpgradeableProxyLib for address;
 

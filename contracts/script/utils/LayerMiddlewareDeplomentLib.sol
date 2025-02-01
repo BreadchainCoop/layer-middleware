@@ -11,7 +11,10 @@ import {stdJson} from "forge-std/StdJson.sol";
 import {ECDSAStakeRegistry} from "@eigenlayer-middleware/src/unaudited/ECDSAStakeRegistry.sol";
 import {LayerServiceManager} from "../../src/LayerServiceManager.sol";
 import {IDelegationManager} from "@eigenlayer/contracts/interfaces/IDelegationManager.sol";
-import {Quorum} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistryEventsAndErrors.sol";
+import {
+    IECDSAStakeRegistryTypes,
+    IStrategy
+} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistry.sol";
 import {UpgradeableProxyLib} from "./UpgradeableProxyLib.sol";
 import {CoreDeploymentLib} from "./CoreDeploymentLib.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
@@ -35,7 +38,7 @@ library LayerMiddlewareDeploymentLib {
     function deployContracts(
         address proxyAdmin,
         CoreDeploymentLib.DeploymentData memory core,
-        Quorum memory quorum
+        IECDSAStakeRegistryTypes.Quorum memory quorum
     ) internal returns (DeploymentData memory) {
         DeploymentData memory result;
 
@@ -56,7 +59,7 @@ library LayerMiddlewareDeploymentLib {
         );
         // Upgrade contracts
         bytes memory stakeRegistryUpgradeCall = abi.encodeCall(
-            ECDSAStakeRegistry.initialize, (result.layerServiceManager, 0, quorum, msg.sender)
+            ECDSAStakeRegistry.initialize, (result.layerServiceManager, 0, quorum)
         );
         bytes memory layerServiceManagerUpgradeCall = abi.encodeCall(
             LayerServiceManager.initialize, (msg.sender, msg.sender)
