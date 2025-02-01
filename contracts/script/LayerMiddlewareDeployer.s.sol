@@ -23,7 +23,6 @@ import {
 contract LayerMiddlewareDeployer is Script {
     using CoreDeploymentLib for *;
     using UpgradeableProxyLib for address;
-
     address private deployer;
     address proxyAdmin;
     IStrategy helloWorldStrategy;
@@ -34,7 +33,6 @@ contract LayerMiddlewareDeployer is Script {
     function setUp() public virtual {
         deployer = vm.rememberKey(vm.envUint("PRIVATE_KEY"));
         vm.label(deployer, "Deployer");
-
         coreDeployment = CoreDeploymentLib.readDeploymentJson("deployments/core/", block.chainid);
        
         token = new ERC20Mock();

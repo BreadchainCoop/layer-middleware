@@ -42,6 +42,9 @@ library LayerMiddlewareDeploymentLib {
         // First, deploy upgradeable proxy contracts that will point to the implementations.
         result.layerServiceManager = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
         result.stakeRegistry = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
+
+        address handler = vm.envAddress("HYPERSTITION_FACTORY_ADDRESS");
+
         // Deploy the implementation contracts, using the proxy contracts as inputs
         address stakeRegistryImpl =
             address(new ECDSAStakeRegistry(IDelegationManager(core.delegationManager)));
@@ -51,7 +54,8 @@ library LayerMiddlewareDeploymentLib {
                 result.stakeRegistry,
                 core.rewardsCoordinator,
                 core.delegationManager,
-                core.allocationManager
+                core.allocationManager,
+                handler
             )
         );
         // Upgrade contracts
