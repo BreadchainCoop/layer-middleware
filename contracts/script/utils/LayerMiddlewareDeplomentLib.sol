@@ -66,6 +66,7 @@ library LayerMiddlewareDeploymentLib {
         );
         UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, stakeRegistryUpgradeCall);
         UpgradeableProxyLib.upgradeAndCall(result.layerServiceManager, layerServiceManagerImpl, layerServiceManagerUpgradeCall);
+        LayerServiceManager(result.layerServiceManager).transferOwnership(msg.sender);
 
         // Dummy AVSRegistrar deployment for now
         address avsRegistrar = address(new LayerAVSRegistrar());
