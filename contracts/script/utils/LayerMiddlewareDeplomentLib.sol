@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import {TransparentUpgradeableProxy} from
     "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Script} from "forge-std/Script.sol";
 import {console2} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
@@ -66,7 +67,13 @@ library LayerMiddlewareDeploymentLib {
         );
         UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, stakeRegistryUpgradeCall);
         UpgradeableProxyLib.upgradeAndCall(result.layerServiceManager, layerServiceManagerImpl, layerServiceManagerUpgradeCall);
-        LayerServiceManager(result.layerServiceManager).transferOwnership(msg.sender);
+
+        // TODO: This is incredibly stupid, 
+        // when we implement out own stake registry, pass owner as an argument
+        bytes memory stakeRegistryOwnerUpgradeCall = abi.encodeCall(
+            Ownable.transferOwnership, (msg.sender)
+        );
+        UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, stakeRegistryOwnerUpgradeCall);
 
         // Dummy AVSRegistrar deployment for now
         address avsRegistrar = address(new LayerAVSRegistrar());
