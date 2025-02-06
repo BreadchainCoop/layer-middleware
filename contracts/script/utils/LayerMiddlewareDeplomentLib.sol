@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import {TransparentUpgradeableProxy} from
     "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Script} from "forge-std/Script.sol";
 import {console2} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
@@ -11,7 +12,10 @@ import {stdJson} from "forge-std/StdJson.sol";
 import {ECDSAStakeRegistry} from "@eigenlayer-middleware/src/unaudited/ECDSAStakeRegistry.sol";
 import {LayerServiceManager} from "../../src/LayerServiceManager.sol";
 import {IDelegationManager} from "@eigenlayer/contracts/interfaces/IDelegationManager.sol";
-import {Quorum} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistryEventsAndErrors.sol";
+import {
+    IECDSAStakeRegistryTypes,
+    IStrategy
+} from "@eigenlayer-middleware/src/interfaces/IECDSAStakeRegistry.sol";
 import {UpgradeableProxyLib} from "./UpgradeableProxyLib.sol";
 import {CoreDeploymentLib} from "./CoreDeploymentLib.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
@@ -35,7 +39,7 @@ library LayerMiddlewareDeploymentLib {
     function deployContracts(
         address proxyAdmin,
         CoreDeploymentLib.DeploymentData memory core,
-        Quorum memory quorum
+        IECDSAStakeRegistryTypes.Quorum memory quorum
     ) internal returns (DeploymentData memory) {
         DeploymentData memory result;
 
@@ -56,13 +60,20 @@ library LayerMiddlewareDeploymentLib {
         );
         // Upgrade contracts
         bytes memory stakeRegistryUpgradeCall = abi.encodeCall(
-            ECDSAStakeRegistry.initialize, (result.layerServiceManager, 0, quorum, msg.sender)
+            ECDSAStakeRegistry.initialize, (result.layerServiceManager, 0, quorum)
         );
         bytes memory layerServiceManagerUpgradeCall = abi.encodeCall(
             LayerServiceManager.initialize, (msg.sender, msg.sender)
         );
         UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, stakeRegistryUpgradeCall);
         UpgradeableProxyLib.upgradeAndCall(result.layerServiceManager, layerServiceManagerImpl, layerServiceManagerUpgradeCall);
+
+        // TODO: This is incredibly stupid, 
+        // when we implement out own stake registry, pass owner as an argument
+        bytes memory stakeRegistryOwnerUpgradeCall = abi.encodeCall(
+            Ownable.transferOwnership, (msg.sender)
+        );
+        UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, stakeRegistryOwnerUpgradeCall);
 
         // Dummy AVSRegistrar deployment for now
         address avsRegistrar = address(new LayerAVSRegistrar());
