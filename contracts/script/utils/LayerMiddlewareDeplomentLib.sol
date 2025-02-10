@@ -34,6 +34,7 @@ library LayerMiddlewareDeploymentLib {
         address strategy;
         address token;
         address avsRegistrar;
+        string metadataURI;
     }
 
     function deployContracts(
@@ -78,6 +79,8 @@ library LayerMiddlewareDeploymentLib {
         // Dummy AVSRegistrar deployment for now
         address avsRegistrar = address(new LayerAVSRegistrar());
         result.avsRegistrar = avsRegistrar;
+
+        result.metadataURI = "https://raw.githubusercontent.com/ethgas-developer/ethgas-developer.github.io/main/vision-avs-2.json";
 
         return result;
     }
@@ -140,13 +143,15 @@ library LayerMiddlewareDeploymentLib {
         address proxyAdmin
     ) private view returns (string memory) {
         return string.concat(
-            '{"lastUpdate":{"timestamp":"',
-            vm.toString(block.timestamp),
-            '","block_number":"',
-            vm.toString(block.number),
-            '"},"addresses":',
-            _generateContractsJson(data, proxyAdmin),
-            "}"
+            '{',
+                '"lastUpdate":{',
+                    '"timestamp":"', vm.toString(block.timestamp), '",',
+                    '"block_number":"', vm.toString(block.number), '"',
+                '},',
+                '"addresses":', 
+                    _generateContractsJson(data, proxyAdmin),
+                ',"metaDataURI":"', data.metadataURI, '"',
+            '}'
         );
     }
 
