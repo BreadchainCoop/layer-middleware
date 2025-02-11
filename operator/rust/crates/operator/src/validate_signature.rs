@@ -11,8 +11,8 @@ use dotenv::dotenv;
 use eigen_logging::{get_logger, init_logger, log_level::LogLevel};
 use eigen_utils::{get_provider, get_signer};
 use eyre::Result;
-use hello_world_utils::offchainmessageconsumer::OffchainMessageConsumer;
 use hello_world_utils::offchainmessageconsumer::ILayerSDK::Task;
+use hello_world_utils::offchainmessageconsumer::OffchainMessageConsumer;
 use hello_world_utils::parse_offchain_message_consumer_address;
 use once_cell::sync::Lazy;
 use std::{env, str::FromStr};
@@ -20,15 +20,23 @@ use std::{env, str::FromStr};
 pub const fn get_rpc_url() -> &'static str {
     match option_env!("TESTNET_RPC_URL") {
         Some(url) => url,
-        None => "http://ethereum:8545"
+        None => "http://ethereum:8545",
     }
 }
 pub const ANVIL_RPC_URL: &str = get_rpc_url();
 fn read_private_keys() -> Result<Vec<String>> {
     let home = env::var("HOME").expect("HOME environment variable not set");
     let mut keys = Vec::new();
-    
-    for i in 1..=3 {
+
+    let amt_keys: isize = std::env::args()
+        .nth(1)
+        .unwrap_or_else(|| "3".to_string())
+        .parse::<isize>()
+        .unwrap();
+
+    println!("{amt_keys:?}");
+
+    for i in 1..=amt_keys {
         let key_path = format!("{}/.nodes/operator{}", home, i);
         let key = std::fs::read_to_string(key_path)?;
         // Extract the key from environment variable format
@@ -40,34 +48,33 @@ fn read_private_keys() -> Result<Vec<String>> {
             .trim()
             .trim_start_matches("0x")
             .to_string();
-        
+
         // Ensure the key is properly formatted with 0x prefix
         let formatted_key = if clean_key.len() == 64 {
             format!("0x{}", clean_key)
         } else {
             return Err(eyre::eyre!(
-                "Invalid key length {} (expected 64) in operator{}. Original line: {}", 
-                clean_key.len(), 
+                "Invalid key length {} (expected 64) in operator{}. Original line: {}",
+                clean_key.len(),
                 i,
                 key.trim().len()
             ));
         };
-        
+
         keys.push(formatted_key);
     }
     Ok(keys)
 }
-static KEYS: Lazy<Vec<String>> = Lazy::new(|| read_private_keys().expect("failed to read private keys"));
+static KEYS: Lazy<Vec<String>> =
+    Lazy::new(|| read_private_keys().expect("failed to read private keys"));
 
-async fn validate_signature(
-    message: String,
-) -> Result<()> {
+async fn validate_signature(message: String) -> Result<()> {
     let pr = get_signer(&KEYS[0], ANVIL_RPC_URL);
-    
+
     // First create and sort operators
     let mut operator_addresses = Vec::new();
     let mut key_map = std::collections::HashMap::new();
-    
+
     // Create a mapping of addresses to keys and collect addresses
     for key in KEYS.iter() {
         let signer = PrivateKeySigner::from_str(key)?;
@@ -75,26 +82,26 @@ async fn validate_signature(
         operator_addresses.push(address);
         key_map.insert(address, key.to_string());
     }
-    
+
     // Sort operator addresses
     operator_addresses.sort();
-    
+
     // Create sorted DynSolValue vectors
     let mut operators: Vec<DynSolValue> = Vec::new();
     let mut signatures: Vec<DynSolValue> = Vec::new();
-    
+
     let m_hash = eip191_hash_message(keccak256(message.abi_encode_packed()));
-    
+
     // Create signatures in the same order as sorted operators
     for address in operator_addresses {
         operators.push(DynSolValue::Address(address));
-        
+
         // Get corresponding key and create signature
         let key = key_map.get(&address).expect("Key must exist for address");
         let signer = PrivateKeySigner::from_str(key)?;
         signatures.push(DynSolValue::Bytes(signer.sign_hash_sync(&m_hash)?.into()));
     }
-    
+
     let current_block = U256::from(get_provider(ANVIL_RPC_URL).get_block_number().await?);
     let signature_data = DynSolValue::Tuple(vec![
         DynSolValue::Array(operators),
@@ -106,13 +113,25 @@ async fn validate_signature(
         dataHash: m_hash,
         signatureData: signature_data.into(),
     };
-    let offchain_message_consumer_address = parse_offchain_message_consumer_address("contracts/deployments/layer-middleware/17000.json")?;
-    let offchain_message_consumer = OffchainMessageConsumer::new(offchain_message_consumer_address, &pr);
-    let tx = offchain_message_consumer.validateOffchainMessage(task).gas(500000).send().await?.get_receipt().await?.transaction_hash;
-    get_logger().info(&format!("Signature verification completed with tx hash {}", tx), "");
+    let offchain_message_consumer_address = parse_offchain_message_consumer_address(
+        "contracts/deployments/layer-middleware/17000.json",
+    )?;
+    let offchain_message_consumer =
+        OffchainMessageConsumer::new(offchain_message_consumer_address, &pr);
+    let tx = offchain_message_consumer
+        .validateOffchainMessage(task)
+        .gas(500000)
+        .send()
+        .await?
+        .get_receipt()
+        .await?
+        .transaction_hash;
+    get_logger().info(
+        &format!("Signature verification completed with tx hash {}", tx),
+        "",
+    );
     Ok(())
 }
-
 
 #[tokio::main]
 pub async fn main() {
