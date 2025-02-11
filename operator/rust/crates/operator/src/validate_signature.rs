@@ -34,8 +34,6 @@ fn read_private_keys() -> Result<Vec<String>> {
         .parse::<isize>()
         .unwrap();
 
-    println!("{amt_keys:?}");
-
     for i in 1..=amt_keys {
         let key_path = format!("{}/.nodes/operator{}", home, i);
         let key = std::fs::read_to_string(key_path)?;
