@@ -473,7 +473,7 @@ library CoreDeploymentLib {
     }
 
     function readMetadataURI(string memory json, DeploymentData memory data) internal returns (DeploymentData memory) {
-        try vm.parseJson(json, ".metadataURI") returns (bytes memory parsed) {
+        try vm.parseJson(json, ".metaDataURI") returns (bytes memory parsed) {
             if (parsed.length > 0) {
             data.metadataURI = abi.decode(parsed, (string));
             } else {
