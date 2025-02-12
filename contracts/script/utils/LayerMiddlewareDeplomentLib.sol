@@ -80,8 +80,6 @@ library LayerMiddlewareDeploymentLib {
         address avsRegistrar = address(new LayerAVSRegistrar());
         result.avsRegistrar = avsRegistrar;
 
-        result.metadataURI = "https://raw.githubusercontent.com/ethgas-developer/ethgas-developer.github.io/main/vision-avs-2.json";
-
         return result;
     }
 
@@ -108,7 +106,7 @@ library LayerMiddlewareDeploymentLib {
         data.strategy = json.readAddress(".contracts.strategy");
         data.token = json.readAddress(".contracts.token");
         data.avsRegistrar = json.readAddress(".contracts.avsRegistrar");
-
+        
         return data;
     }
 
