@@ -34,6 +34,7 @@ library LayerMiddlewareDeploymentLib {
         address strategy;
         address token;
         address avsRegistrar;
+        string metadataURI;
     }
 
     function deployContracts(
@@ -105,7 +106,7 @@ library LayerMiddlewareDeploymentLib {
         data.strategy = json.readAddress(".contracts.strategy");
         data.token = json.readAddress(".contracts.token");
         data.avsRegistrar = json.readAddress(".contracts.avsRegistrar");
-
+        
         return data;
     }
 
@@ -140,13 +141,15 @@ library LayerMiddlewareDeploymentLib {
         address proxyAdmin
     ) private view returns (string memory) {
         return string.concat(
-            '{"lastUpdate":{"timestamp":"',
-            vm.toString(block.timestamp),
-            '","block_number":"',
-            vm.toString(block.number),
-            '"},"addresses":',
-            _generateContractsJson(data, proxyAdmin),
-            "}"
+            '{',
+                '"lastUpdate":{',
+                    '"timestamp":"', vm.toString(block.timestamp), '",',
+                    '"block_number":"', vm.toString(block.number), '"',
+                '},',
+                '"addresses":', 
+                    _generateContractsJson(data, proxyAdmin),
+                ',"metaDataURI":"', data.metadataURI, '"',
+            '}'
         );
     }
 

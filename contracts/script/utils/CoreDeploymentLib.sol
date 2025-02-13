@@ -86,6 +86,7 @@ library CoreDeploymentLib {
         address strategyFactory;
         address strategyBeacon;
         address permissionController;
+        string  metadataURI;
     }
 
     function deployContracts(
@@ -471,6 +472,19 @@ library CoreDeploymentLib {
         return data;
     }
 
+    function readMetadataURI(string memory json, DeploymentData memory data) internal returns (DeploymentData memory) {
+        try vm.parseJson(json, ".metaDataURI") returns (bytes memory parsed) {
+            if (parsed.length > 0) {
+            data.metadataURI = abi.decode(parsed, (string));
+            } else {
+            revert("metadataURI not found in JSON. Might need to add to writeDeploymentJson");
+            }
+        } catch {
+            revert("metadataURI not found in JSON. Might need to add to writeDeploymentJson");
+        }
+        return data;
+    }
+
     function readDeploymentJson(
         string memory directoryPath,
         uint256 chainId
@@ -493,6 +507,8 @@ library CoreDeploymentLib {
         DeploymentData memory data;
         data = readFirstAddressSet(json, data);
         data = readSecondAddressSet(json, data);
+        data = readMetadataURI(json, data);
+
         return data;
     }
 
