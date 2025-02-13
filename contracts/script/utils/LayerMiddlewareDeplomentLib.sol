@@ -80,6 +80,7 @@ library LayerMiddlewareDeploymentLib {
         address avsRegistrar = address(new LayerAVSRegistrar());
         result.avsRegistrar = avsRegistrar;
 
+        result.metadataURI = core.metadataURI;
         return result;
     }
 
@@ -106,7 +107,7 @@ library LayerMiddlewareDeploymentLib {
         data.strategy = json.readAddress(".contracts.strategy");
         data.token = json.readAddress(".contracts.token");
         data.avsRegistrar = json.readAddress(".contracts.avsRegistrar");
-        
+
         return data;
     }
 
