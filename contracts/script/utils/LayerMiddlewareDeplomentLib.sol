@@ -80,6 +80,7 @@ library LayerMiddlewareDeploymentLib {
         address avsRegistrar = address(new LayerAVSRegistrar());
         result.avsRegistrar = avsRegistrar;
 
+        result.metadataURI = core.metadataURI;
         return result;
     }
 
