@@ -142,5 +142,21 @@ contract LayerServiceManager is ECDSAServiceManagerBase, ILayerServiceManager {
         //     selector: selector
         // });
     }
+        function validate(bytes calldata data, bytes calldata signature) external view
+    {
+        bytes32 message = keccak256(data);
+        bytes32 ethSignedMessageHash = ECDSAUpgradeable.toEthSignedMessageHash(message);
+        bytes4 magicValue = IERC1271Upgradeable.isValidSignature.selector;
+
+        // If the registry returns the magicValue, signature is considered valid
+        if( magicValue !=
+            ECDSAStakeRegistry(stakeRegistry).isValidSignature(
+                ethSignedMessageHash,
+                signature
+            )
+        ) {
+            revert ILayerServiceManager.InvalidSignature();
+        }
+    }
 
 }
