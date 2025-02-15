@@ -18,11 +18,20 @@ use once_cell::sync::Lazy;
 use std::{env, str::FromStr};
 
 pub const fn get_rpc_url() -> &'static str {
-    match option_env!("TESTNET_RPC_URL") {
-        Some(url) => url,
-        None => "http://ethereum:8545",
+    let mode = match option_env!("DEPLOY_ENV") {
+        Some(mode) => mode.as_bytes(),
+        None => b"LOCAL",
+    };
+    match mode {
+        b"LOCAL" => "http://ethereum:8545",
+        b"TESTNET" => match option_env!("TESTNET_RPC_URL") {
+            Some(url) => url,
+            None => "http://ethereum:8545",
+        },
+        _ => "http://ethereum:8545",
     }
 }
+
 pub const ANVIL_RPC_URL: &str = get_rpc_url();
 fn read_private_keys() -> Result<Vec<String>> {
     let home = env::var("HOME").expect("HOME environment variable not set");
