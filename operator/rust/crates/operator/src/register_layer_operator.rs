@@ -18,22 +18,7 @@ use once_cell::sync::Lazy;
 use rand::RngCore;
 use std::{env, str::FromStr};
 
-pub const fn get_rpc_url() -> &'static str {
-    let mode = match option_env!("DEPLOY_ENV") {
-        Some(mode) => mode.as_bytes(),
-        None => b"LOCAL",
-    };
-    match mode {
-        b"LOCAL" => "http://ethereum:8545",
-        b"TESTNET" => match option_env!("TESTNET_RPC_URL") {
-            Some(url) => url,
-            None => "http://ethereum:8545",
-        },
-        _ => "http://ethereum:8545",
-    }
-}
-
-pub const ANVIL_RPC_URL: &str = get_rpc_url();
+pub const ANVIL_RPC_URL: &str = crate::validate_signature::get_rpc_url();
 static KEY: Lazy<String> =
     Lazy::new(|| env::var("PRIVATE_KEY").expect("failed to retrieve private key"));
 

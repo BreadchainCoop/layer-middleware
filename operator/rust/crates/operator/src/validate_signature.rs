@@ -10,29 +10,33 @@ use dotenv::dotenv;
 
 use eigen_logging::{get_logger, init_logger, log_level::LogLevel};
 use eigen_utils::{get_provider, get_signer};
-use eyre::Result;
+use eyre::{Ok, Result};
 use hello_world_utils::offchainmessageconsumer::ILayerSDK::Task;
 use hello_world_utils::offchainmessageconsumer::OffchainMessageConsumer;
 use hello_world_utils::parse_offchain_message_consumer_address;
 use once_cell::sync::Lazy;
+use serde::de::IntoDeserializer;
 use std::{env, str::FromStr};
+use tokio::time::error::Error;
 
 pub const fn get_rpc_url() -> &'static str {
     let mode = match option_env!("DEPLOY_ENV") {
         Some(mode) => mode.as_bytes(),
-        None => b"LOCAL",
+        None => panic!("DEPLOY_ENV is not set!"),
     };
+
     match mode {
         b"LOCAL" => "http://ethereum:8545",
         b"TESTNET" => match option_env!("TESTNET_RPC_URL") {
             Some(url) => url,
-            None => "http://ethereum:8545",
+            None => panic!("There is no TESTNET_RPC_URL set"),
         },
-        _ => "http://ethereum:8545",
+        _ => panic!("DEPLOY_ENV set incorrectly!"),
     }
 }
 
 pub const ANVIL_RPC_URL: &str = get_rpc_url();
+
 fn read_private_keys() -> Result<Vec<String>> {
     let home = env::var("HOME").expect("HOME environment variable not set");
     let mut keys = Vec::new();

@@ -30,8 +30,6 @@ rustdoc.all = "warn"
 tokio = {version = "1.37.0" , features = ["test-util", "full","sync","rt-multi-thread", "macros"] }
 
 serde = "1.0.214"
-
-hello-world-avs-operator = {path = "operator/rust/crates/operator"}
 hello-world-utils = {path = "operator/rust/crates/utils"}
 #eigensdk-rs
 eigen-client-elcontracts = {git = "https://github.com/Layr-labs/eigensdk-rs", rev = "f3a9f32"}
