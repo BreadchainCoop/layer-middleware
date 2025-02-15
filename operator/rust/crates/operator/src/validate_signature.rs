@@ -8,9 +8,10 @@ use alloy::{
 };
 use dotenv::dotenv;
 
+use core::panic;
 use eigen_logging::{get_logger, init_logger, log_level::LogLevel};
 use eigen_utils::{get_provider, get_signer};
-use eyre::{Ok, Result};
+use eyre::{eyre, Ok, Result};
 use hello_world_utils::offchainmessageconsumer::ILayerSDK::Task;
 use hello_world_utils::offchainmessageconsumer::OffchainMessageConsumer;
 use hello_world_utils::parse_offchain_message_consumer_address;
@@ -19,23 +20,31 @@ use serde::de::IntoDeserializer;
 use std::{env, str::FromStr};
 use tokio::time::error::Error;
 
-pub const fn get_rpc_url() -> &'static str {
+pub fn get_rpc_url() -> eyre::Result<&'static str> {
     let mode = match option_env!("DEPLOY_ENV") {
-        Some(mode) => mode.as_bytes(),
-        None => panic!("DEPLOY_ENV is not set!"),
+        Some(mode) => Ok(mode),
+        None => Err(eyre!("DEPLOY_ENV is not set!")),
     };
 
     match mode {
-        b"LOCAL" => "http://ethereum:8545",
-        b"TESTNET" => match option_env!("TESTNET_RPC_URL") {
-            Some(url) => url,
-            None => panic!("There is no TESTNET_RPC_URL set"),
+        Result::Ok(mode) => match mode {
+            "LOCAL" => Ok("http://ethereum:8545"),
+            "TESTNET" => match option_env!("TESTNET_RPC_URL") {
+                Some(url) => Ok(url),
+                None => Err(eyre!("There is no TESTNET_RPC_URL set")),
+            },
+            _ => Err(eyre!("DEPLOY_ENV set incorrectly!")),
         },
-        _ => panic!("DEPLOY_ENV set incorrectly!"),
+        Result::Err(err) => Err(eyre!(err)),
     }
 }
 
-pub const ANVIL_RPC_URL: &str = get_rpc_url();
+pub fn anvil_rpc_url() -> &'static str {
+    match get_rpc_url() {
+        Result::Ok(url) => url,
+        Result::Err(err) => panic!("{}", err),
+    }
+}
 
 fn read_private_keys() -> Result<Vec<String>> {
     let home = env::var("HOME").expect("HOME environment variable not set");
@@ -80,7 +89,7 @@ static KEYS: Lazy<Vec<String>> =
     Lazy::new(|| read_private_keys().expect("failed to read private keys"));
 
 async fn validate_signature(message: String) -> Result<()> {
-    let pr = get_signer(&KEYS[0], ANVIL_RPC_URL);
+    let pr = get_signer(&KEYS[0], &anvil_rpc_url());
 
     // First create and sort operators
     let mut operator_addresses = Vec::new();
@@ -113,7 +122,7 @@ async fn validate_signature(message: String) -> Result<()> {
         signatures.push(DynSolValue::Bytes(signer.sign_hash_sync(&m_hash)?.into()));
     }
 
-    let current_block = U256::from(get_provider(ANVIL_RPC_URL).get_block_number().await?);
+    let current_block = U256::from(get_provider(anvil_rpc_url()).get_block_number().await?);
     let signature_data = DynSolValue::Tuple(vec![
         DynSolValue::Array(operators),
         DynSolValue::Array(signatures),
