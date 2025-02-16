@@ -8,22 +8,30 @@ use alloy::{
 };
 use dotenv::dotenv;
 
+use core::panic;
 use eigen_logging::{get_logger, init_logger, log_level::LogLevel};
 use eigen_utils::{get_provider, get_signer};
-use eyre::Result;
+use eyre::{Ok, Result};
 use hello_world_utils::offchainmessageconsumer::ILayerSDK::Task;
 use hello_world_utils::offchainmessageconsumer::OffchainMessageConsumer;
 use hello_world_utils::parse_offchain_message_consumer_address;
 use once_cell::sync::Lazy;
 use std::{env, str::FromStr};
 
-pub const fn get_rpc_url() -> &'static str {
-    match option_env!("TESTNET_RPC_URL") {
-        Some(url) => url,
-        None => "http://ethereum:8545",
+pub fn get_rpc_url() -> &'static str {
+    let mode = option_env!("DEPLOY_ENV").expect("error: DEPLOY_ENV is not set!");
+
+    match mode {
+        "LOCAL" => "http://ethereum:8545",
+        "TESTNET" => {
+            option_env!("TESTNET_RPC_URL").expect("error: There is no TESTNET_RPC_URL set!")
+        }
+        _ => panic!("error: DEPLOY_ENV set incorrectly!"),
     }
 }
-pub const ANVIL_RPC_URL: &str = get_rpc_url();
+
+static ANVIL_RPC_URL: Lazy<String> = Lazy::new(|| get_rpc_url().to_owned());
+
 fn read_private_keys() -> Result<Vec<String>> {
     let home = env::var("HOME").expect("HOME environment variable not set");
     let mut keys = Vec::new();
@@ -67,7 +75,7 @@ static KEYS: Lazy<Vec<String>> =
     Lazy::new(|| read_private_keys().expect("failed to read private keys"));
 
 async fn validate_signature(message: String) -> Result<()> {
-    let pr = get_signer(&KEYS[0], ANVIL_RPC_URL);
+    let pr = get_signer(&KEYS[0], &ANVIL_RPC_URL);
 
     // First create and sort operators
     let mut operator_addresses = Vec::new();
@@ -100,7 +108,7 @@ async fn validate_signature(message: String) -> Result<()> {
         signatures.push(DynSolValue::Bytes(signer.sign_hash_sync(&m_hash)?.into()));
     }
 
-    let current_block = U256::from(get_provider(ANVIL_RPC_URL).get_block_number().await?);
+    let current_block = U256::from(get_provider(&ANVIL_RPC_URL).get_block_number().await?);
     let signature_data = DynSolValue::Tuple(vec![
         DynSolValue::Array(operators),
         DynSolValue::Array(signatures),

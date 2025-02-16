@@ -10,8 +10,7 @@ use eigen_logging::{get_logger, init_logger, log_level::LogLevel};
 use eigen_utils::get_signer;
 use hello_world_utils::ecdsastakeregistry::ECDSAStakeRegistry;
 use hello_world_utils::{
-    ecdsastakeregistry::ISignatureUtils::SignatureWithSaltAndExpiry,
-    EigenLayerData,
+    ecdsastakeregistry::ISignatureUtils::SignatureWithSaltAndExpiry, EigenLayerData,
 };
 use hello_world_utils::{parse_layer_service_manager, parse_stake_registry_address_layer};
 
@@ -19,18 +18,25 @@ use once_cell::sync::Lazy;
 use rand::RngCore;
 use std::{env, str::FromStr};
 
-pub const fn get_rpc_url() -> &'static str {
-    match option_env!("TESTNET_RPC_URL") {
-        Some(url) => url,
-        None => "http://ethereum:8545",
+pub fn get_rpc_url() -> &'static str {
+    let mode = option_env!("DEPLOY_ENV").expect("error: DEPLOY_ENV is not set!");
+
+    match mode {
+        "LOCAL" => "http://ethereum:8545",
+        "TESTNET" => {
+            option_env!("TESTNET_RPC_URL").expect("error: There is no TESTNET_RPC_URL set!")
+        }
+        _ => panic!("error: DEPLOY_ENV set incorrectly!"),
     }
 }
-pub const ANVIL_RPC_URL: &str = get_rpc_url();
+
+static ANVIL_RPC_URL: Lazy<String> = Lazy::new(|| get_rpc_url().to_owned());
+
 static KEY: Lazy<String> =
     Lazy::new(|| env::var("PRIVATE_KEY").expect("failed to retrieve private key"));
 
 async fn register_operator() -> eyre::Result<()> {
-    let pr = get_signer(&KEY.clone(), ANVIL_RPC_URL);
+    let pr = get_signer(&KEY.clone(), &ANVIL_RPC_URL);
     let signer = PrivateKeySigner::from_str(&KEY.clone())?;
 
     let default_slasher = Address::ZERO;
@@ -63,10 +69,15 @@ async fn register_operator() -> eyre::Result<()> {
     let data = std::fs::read_to_string("contracts/deployments/layer-middleware/17000.json")?;
     get_logger().info(&format!("layer-middleware deployment data: {}", data), &"");
     // Use the correct parse function for LayerMiddleware JSON
-    let layer_service_manager_address = parse_layer_service_manager(
-        "contracts/deployments/layer-middleware/17000.json",
-    )?;
-    get_logger().info(&format!("layer_service_manager_address: {}", layer_service_manager_address), &"");
+    let layer_service_manager_address =
+        parse_layer_service_manager("contracts/deployments/layer-middleware/17000.json")?;
+    get_logger().info(
+        &format!(
+            "layer_service_manager_address: {}",
+            layer_service_manager_address
+        ),
+        &"",
+    );
     let digest_hash = elcontracts_reader_instance
         .calculate_operator_avs_registration_digest_hash(
             signer.address(),
@@ -85,11 +96,9 @@ async fn register_operator() -> eyre::Result<()> {
     };
 
     // Use the LayerMiddleware parsing function for stake registry
-    let stake_registry_address = parse_stake_registry_address_layer(
-        "contracts/deployments/layer-middleware/17000.json",
-    )?;
-    let contract_ecdsa_stake_registry =
-        ECDSAStakeRegistry::new(stake_registry_address, &pr);
+    let stake_registry_address =
+        parse_stake_registry_address_layer("contracts/deployments/layer-middleware/17000.json")?;
+    let contract_ecdsa_stake_registry = ECDSAStakeRegistry::new(stake_registry_address, &pr);
     let registeroperator_details_call = contract_ecdsa_stake_registry
         .registerOperatorWithSignature(operator_signature, signer.clone().address())
         .gas(500000);
@@ -111,7 +120,6 @@ async fn register_operator() -> eyre::Result<()> {
 
     Ok(())
 }
-    
 
 #[tokio::main]
 pub async fn main() {
