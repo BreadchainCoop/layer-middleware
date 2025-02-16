@@ -14,42 +14,29 @@ use hello_world_utils::{
 };
 use hello_world_utils::{parse_layer_service_manager, parse_stake_registry_address_layer};
 
-use eyre::eyre;
 use once_cell::sync::Lazy;
 use rand::RngCore;
 use std::{env, str::FromStr};
 
-pub fn get_rpc_url() -> eyre::Result<&'static str> {
-    let mode = match option_env!("DEPLOY_ENV") {
-        Some(mode) => Ok(mode),
-        None => Err(eyre!("DEPLOY_ENV is not set!")),
-    };
+pub fn get_rpc_url() -> &'static str {
+    let mode = option_env!("DEPLOY_ENV").expect("error: DEPLOY_ENV is not set!");
 
     match mode {
-        Result::Ok(mode) => match mode {
-            "LOCAL" => Ok("http://ethereum:8545"),
-            "TESTNET" => match option_env!("TESTNET_RPC_URL") {
-                Some(url) => Ok(url),
-                None => Err(eyre!("There is no TESTNET_RPC_URL set")),
-            },
-            _ => Err(eyre!("DEPLOY_ENV set incorrectly!")),
-        },
-        Result::Err(err) => Err(eyre!(err)),
+        "LOCAL" => "http://ethereum:8545",
+        "TESTNET" => {
+            option_env!("TESTNET_RPC_URL").expect("error: There is no TESTNET_RPC_URL set!")
+        }
+        _ => panic!("error: DEPLOY_ENV set incorrectly!"),
     }
 }
 
-pub fn anvil_rpc_url() -> &'static str {
-    match get_rpc_url() {
-        Result::Ok(url) => url,
-        Result::Err(err) => panic!("{}", err),
-    }
-}
+static ANVIL_RPC_URL: Lazy<String> = Lazy::new(|| get_rpc_url().to_owned());
 
 static KEY: Lazy<String> =
     Lazy::new(|| env::var("PRIVATE_KEY").expect("failed to retrieve private key"));
 
 async fn register_operator() -> eyre::Result<()> {
-    let pr = get_signer(&KEY.clone(), anvil_rpc_url());
+    let pr = get_signer(&KEY.clone(), &ANVIL_RPC_URL);
     let signer = PrivateKeySigner::from_str(&KEY.clone())?;
 
     let default_slasher = Address::ZERO;
@@ -64,7 +51,7 @@ async fn register_operator() -> eyre::Result<()> {
         default_slasher,
         delegation_manager_address,
         avs_directory_address,
-        anvil_rpc_url().to_string(),
+        ANVIL_RPC_URL.to_string(),
     );
 
     let is_registered = elcontracts_reader_instance

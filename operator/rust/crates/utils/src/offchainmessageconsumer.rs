@@ -13,11 +13,10 @@ library ILayerSDK {
     clippy::style
 )]
 pub mod ILayerSDK {
-    use super::*;
     use alloy::sol_types as alloy_sol_types;
     /**```solidity
-struct Task { bytes32 dataHash; bytes signatureData; }
-```*/
+    struct Task { bytes32 dataHash; bytes signatureData; }
+    ```*/
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct Task {
@@ -44,9 +43,7 @@ struct Task { bytes32 dataHash; bytes signatureData; }
         );
         #[cfg(test)]
         #[allow(dead_code, unreachable_patterns)]
-        fn _type_assertion(
-            _t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>,
-        ) {
+        fn _type_assertion(_t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>) {
             match _t {
                 alloy_sol_types::private::AssertTypeEq::<
                     <UnderlyingSolTuple as alloy_sol_types::SolType>::RustType,
@@ -92,64 +89,50 @@ struct Task { bytes32 dataHash; bytes signatureData; }
                 if let Some(size) = <Self as alloy_sol_types::SolType>::ENCODED_SIZE {
                     return size;
                 }
-                let tuple = <UnderlyingRustTuple<
-                    '_,
-                > as ::core::convert::From<Self>>::from(self.clone());
-                <UnderlyingSolTuple<
-                    '_,
-                > as alloy_sol_types::SolType>::abi_encoded_size(&tuple)
+                let tuple =
+                    <UnderlyingRustTuple<'_> as ::core::convert::From<Self>>::from(self.clone());
+                <UnderlyingSolTuple<'_> as alloy_sol_types::SolType>::abi_encoded_size(&tuple)
             }
             #[inline]
             fn stv_eip712_data_word(&self) -> alloy_sol_types::Word {
                 <Self as alloy_sol_types::SolStruct>::eip712_hash_struct(self)
             }
             #[inline]
-            fn stv_abi_encode_packed_to(
-                &self,
-                out: &mut alloy_sol_types::private::Vec<u8>,
-            ) {
-                let tuple = <UnderlyingRustTuple<
-                    '_,
-                > as ::core::convert::From<Self>>::from(self.clone());
-                <UnderlyingSolTuple<
-                    '_,
-                > as alloy_sol_types::SolType>::abi_encode_packed_to(&tuple, out)
+            fn stv_abi_encode_packed_to(&self, out: &mut alloy_sol_types::private::Vec<u8>) {
+                let tuple =
+                    <UnderlyingRustTuple<'_> as ::core::convert::From<Self>>::from(self.clone());
+                <UnderlyingSolTuple<'_> as alloy_sol_types::SolType>::abi_encode_packed_to(
+                    &tuple, out,
+                )
             }
             #[inline]
             fn stv_abi_packed_encoded_size(&self) -> usize {
                 if let Some(size) = <Self as alloy_sol_types::SolType>::PACKED_ENCODED_SIZE {
                     return size;
                 }
-                let tuple = <UnderlyingRustTuple<
-                    '_,
-                > as ::core::convert::From<Self>>::from(self.clone());
-                <UnderlyingSolTuple<
-                    '_,
-                > as alloy_sol_types::SolType>::abi_packed_encoded_size(&tuple)
+                let tuple =
+                    <UnderlyingRustTuple<'_> as ::core::convert::From<Self>>::from(self.clone());
+                <UnderlyingSolTuple<'_> as alloy_sol_types::SolType>::abi_packed_encoded_size(
+                    &tuple,
+                )
             }
         }
         #[automatically_derived]
         impl alloy_sol_types::SolType for Task {
             type RustType = Self;
-            type Token<'a> = <UnderlyingSolTuple<
-                'a,
-            > as alloy_sol_types::SolType>::Token<'a>;
+            type Token<'a> = <UnderlyingSolTuple<'a> as alloy_sol_types::SolType>::Token<'a>;
             const SOL_NAME: &'static str = <Self as alloy_sol_types::SolStruct>::NAME;
-            const ENCODED_SIZE: Option<usize> = <UnderlyingSolTuple<
-                '_,
-            > as alloy_sol_types::SolType>::ENCODED_SIZE;
-            const PACKED_ENCODED_SIZE: Option<usize> = <UnderlyingSolTuple<
-                '_,
-            > as alloy_sol_types::SolType>::PACKED_ENCODED_SIZE;
+            const ENCODED_SIZE: Option<usize> =
+                <UnderlyingSolTuple<'_> as alloy_sol_types::SolType>::ENCODED_SIZE;
+            const PACKED_ENCODED_SIZE: Option<usize> =
+                <UnderlyingSolTuple<'_> as alloy_sol_types::SolType>::PACKED_ENCODED_SIZE;
             #[inline]
             fn valid_token(token: &Self::Token<'_>) -> bool {
                 <UnderlyingSolTuple<'_> as alloy_sol_types::SolType>::valid_token(token)
             }
             #[inline]
             fn detokenize(token: Self::Token<'_>) -> Self::RustType {
-                let tuple = <UnderlyingSolTuple<
-                    '_,
-                > as alloy_sol_types::SolType>::detokenize(token);
+                let tuple = <UnderlyingSolTuple<'_> as alloy_sol_types::SolType>::detokenize(token);
                 <Self as ::core::convert::From<UnderlyingRustTuple<'_>>>::from(tuple)
             }
         }
@@ -163,9 +146,9 @@ struct Task { bytes32 dataHash; bytes signatureData; }
                 )
             }
             #[inline]
-            fn eip712_components() -> alloy_sol_types::private::Vec<
-                alloy_sol_types::private::Cow<'static, str>,
-            > {
+            fn eip712_components(
+            ) -> alloy_sol_types::private::Vec<alloy_sol_types::private::Cow<'static, str>>
+            {
                 alloy_sol_types::private::Vec::new()
             }
             #[inline]
@@ -206,9 +189,7 @@ struct Task { bytes32 dataHash; bytes signatureData; }
                 rust: &Self::RustType,
                 out: &mut alloy_sol_types::private::Vec<u8>,
             ) {
-                out.reserve(
-                    <Self as alloy_sol_types::EventTopic>::topic_preimage_length(rust),
-                );
+                out.reserve(<Self as alloy_sol_types::EventTopic>::topic_preimage_length(rust));
                 <alloy::sol_types::sol_data::FixedBytes<
                     32,
                 > as alloy_sol_types::EventTopic>::encode_topic_preimage(
@@ -221,24 +202,17 @@ struct Task { bytes32 dataHash; bytes signatureData; }
                 );
             }
             #[inline]
-            fn encode_topic(
-                rust: &Self::RustType,
-            ) -> alloy_sol_types::abi::token::WordToken {
+            fn encode_topic(rust: &Self::RustType) -> alloy_sol_types::abi::token::WordToken {
                 let mut out = alloy_sol_types::private::Vec::new();
-                <Self as alloy_sol_types::EventTopic>::encode_topic_preimage(
-                    rust,
-                    &mut out,
-                );
-                alloy_sol_types::abi::token::WordToken(
-                    alloy_sol_types::private::keccak256(out),
-                )
+                <Self as alloy_sol_types::EventTopic>::encode_topic_preimage(rust, &mut out);
+                alloy_sol_types::abi::token::WordToken(alloy_sol_types::private::keccak256(out))
             }
         }
     };
     use alloy::contract as alloy_contract;
     /**Creates a new wrapper around an on-chain [`ILayerSDK`](self) contract instance.
 
-See the [wrapper's documentation](`ILayerSDKInstance`) for more details.*/
+    See the [wrapper's documentation](`ILayerSDKInstance`) for more details.*/
     #[inline]
     pub const fn new<
         T: alloy_contract::private::Transport + ::core::clone::Clone,
@@ -252,15 +226,15 @@ See the [wrapper's documentation](`ILayerSDKInstance`) for more details.*/
     }
     /**A [`ILayerSDK`](self) instance.
 
-Contains type-safe methods for interacting with an on-chain instance of the
-[`ILayerSDK`](self) contract located at a given `address`, using a given
-provider `P`.
+    Contains type-safe methods for interacting with an on-chain instance of the
+    [`ILayerSDK`](self) contract located at a given `address`, using a given
+    provider `P`.
 
-If the contract bytecode is available (see the [`sol!`](alloy_sol_types::sol!)
-documentation on how to provide it), the `deploy` and `deploy_builder` methods can
-be used to deploy a new instance of the contract.
+    If the contract bytecode is available (see the [`sol!`](alloy_sol_types::sol!)
+    documentation on how to provide it), the `deploy` and `deploy_builder` methods can
+    be used to deploy a new instance of the contract.
 
-See the [module-level documentation](self) for all the available methods.*/
+    See the [module-level documentation](self) for all the available methods.*/
     #[derive(Clone)]
     pub struct ILayerSDKInstance<T, P, N = alloy_contract::private::Ethereum> {
         address: alloy_sol_types::private::Address,
@@ -271,24 +245,24 @@ See the [module-level documentation](self) for all the available methods.*/
     impl<T, P, N> ::core::fmt::Debug for ILayerSDKInstance<T, P, N> {
         #[inline]
         fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-            f.debug_tuple("ILayerSDKInstance").field(&self.address).finish()
+            f.debug_tuple("ILayerSDKInstance")
+                .field(&self.address)
+                .finish()
         }
     }
     /// Instantiation and getters/setters.
     #[automatically_derived]
     impl<
-        T: alloy_contract::private::Transport + ::core::clone::Clone,
-        P: alloy_contract::private::Provider<T, N>,
-        N: alloy_contract::private::Network,
-    > ILayerSDKInstance<T, P, N> {
+            T: alloy_contract::private::Transport + ::core::clone::Clone,
+            P: alloy_contract::private::Provider<T, N>,
+            N: alloy_contract::private::Network,
+        > ILayerSDKInstance<T, P, N>
+    {
         /**Creates a new wrapper around an on-chain [`ILayerSDK`](self) contract instance.
 
-See the [wrapper's documentation](`ILayerSDKInstance`) for more details.*/
+        See the [wrapper's documentation](`ILayerSDKInstance`) for more details.*/
         #[inline]
-        pub const fn new(
-            address: alloy_sol_types::private::Address,
-            provider: P,
-        ) -> Self {
+        pub const fn new(address: alloy_sol_types::private::Address, provider: P) -> Self {
             Self {
                 address,
                 provider,
@@ -330,10 +304,11 @@ See the [wrapper's documentation](`ILayerSDKInstance`) for more details.*/
     /// Function calls.
     #[automatically_derived]
     impl<
-        T: alloy_contract::private::Transport + ::core::clone::Clone,
-        P: alloy_contract::private::Provider<T, N>,
-        N: alloy_contract::private::Network,
-    > ILayerSDKInstance<T, P, N> {
+            T: alloy_contract::private::Transport + ::core::clone::Clone,
+            P: alloy_contract::private::Provider<T, N>,
+            N: alloy_contract::private::Network,
+        > ILayerSDKInstance<T, P, N>
+    {
         /// Creates a new call builder using this contract instance's provider and address.
         ///
         /// Note that the call can be any function call, not just those defined in this
@@ -348,10 +323,11 @@ See the [wrapper's documentation](`ILayerSDKInstance`) for more details.*/
     /// Event filters.
     #[automatically_derived]
     impl<
-        T: alloy_contract::private::Transport + ::core::clone::Clone,
-        P: alloy_contract::private::Provider<T, N>,
-        N: alloy_contract::private::Network,
-    > ILayerSDKInstance<T, P, N> {
+            T: alloy_contract::private::Transport + ::core::clone::Clone,
+            P: alloy_contract::private::Provider<T, N>,
+            N: alloy_contract::private::Network,
+        > ILayerSDKInstance<T, P, N>
+    {
         /// Creates a new event filter using this contract instance's provider and address.
         ///
         /// Note that the type can be any event, not just those defined in this contract.
@@ -479,9 +455,9 @@ pub mod OffchainMessageConsumer {
         b"`\x80`@R4\x80\x15a\0\x0FW_\x80\xFD[P`\x046\x10a\x004W_5`\xE0\x1C\x80cn\xA1\xBD8\x14a\08W\x80cv\x1D\xE1\x9F\x14a\0`W[_\x80\xFD[a\0Ka\0F6`\x04a\x02\xDBV[a\0\xACV[`@Q\x90\x15\x15\x81R` \x01[`@Q\x80\x91\x03\x90\xF3[a\0\x87\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[`@Qs\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x90\x91\x16\x81R` \x01a\0WV[_a\0\xB6\x82a\x03\xB7V[a\0\xBF\x81a\x01>V[a\0\xF5W`@Q\x7F\x10\x0F\x93K\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[a\x017\x83_\x015`@Q\x80`@\x01`@R\x80`\r\x81R` \x01\x7FHello, World!\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81RPa\x02BV[\x93\x92PPPV[\x80Q` \x82\x01Q`@Q\x7F\x16&\xBA~\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81R_\x92s\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x92c\x16&\xBA~\x92a\x01\xB9\x92\x91\x90`\x04\x01a\x04\x96V[` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a\x01\xD4W=_\x80>=_\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a\x01\xF8\x91\x90a\x04\xEDV[\x7F\xFF\xFF\xFF\xFF\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x7F\x16&\xBA~\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x14\x92\x91PPV[_\x80\x82`@Q` \x01a\x02U\x91\x90a\x05,V[`@\x80Q\x80\x83\x03\x7F\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xE0\x01\x81R\x82\x82R\x80Q` \x91\x82\x01 \x7F\x19Ethereum Signed Message:\n32\0\0\0\0\x82\x85\x01R`<\x80\x85\x01\x91\x90\x91R\x82Q\x80\x85\x03\x90\x91\x01\x81R`\\\x90\x93\x01\x90\x91R\x81Q\x91\x01 \x93\x90\x93\x14\x93\x92PPPV[_` \x82\x84\x03\x12\x15a\x02\xEBW_\x80\xFD[\x815g\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x81\x11\x15a\x03\x01W_\x80\xFD[\x82\x01`@\x81\x85\x03\x12\x15a\x017W_\x80\xFD[\x7FNH{q\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0_R`A`\x04R`$_\xFD[`@\x80Q\x90\x81\x01g\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x81\x11\x82\x82\x10\x17\x15a\x03bWa\x03ba\x03\x12V[`@R\x90V[`@Q`\x1F\x82\x01\x7F\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xE0\x16\x81\x01g\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x81\x11\x82\x82\x10\x17\x15a\x03\xAFWa\x03\xAFa\x03\x12V[`@R\x91\x90PV[_`@\x826\x03\x12\x15a\x03\xC7W_\x80\xFD[a\x03\xCFa\x03?V[\x825\x81R` \x80\x84\x015g\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x80\x82\x11\x15a\x03\xEEW_\x80\xFD[\x90\x85\x01\x906`\x1F\x83\x01\x12a\x04\0W_\x80\xFD[\x815\x81\x81\x11\x15a\x04\x12Wa\x04\x12a\x03\x12V[a\x04B\x84\x7F\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xE0`\x1F\x84\x01\x16\x01a\x03hV[\x91P\x80\x82R6\x84\x82\x85\x01\x01\x11\x15a\x04WW_\x80\xFD[\x80\x84\x84\x01\x85\x84\x017_\x90\x82\x01\x84\x01R\x91\x83\x01\x91\x90\x91RP\x92\x91PPV[_[\x83\x81\x10\x15a\x04\x8EW\x81\x81\x01Q\x83\x82\x01R` \x01a\x04vV[PP_\x91\x01RV[\x82\x81R`@` \x82\x01R_\x82Q\x80`@\x84\x01Ra\x04\xBA\x81``\x85\x01` \x87\x01a\x04tV[`\x1F\x01\x7F\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xE0\x16\x91\x90\x91\x01``\x01\x93\x92PPPV[_` \x82\x84\x03\x12\x15a\x04\xFDW_\x80\xFD[\x81Q\x7F\xFF\xFF\xFF\xFF\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81\x16\x81\x14a\x017W_\x80\xFD[_\x82Qa\x05=\x81\x84` \x87\x01a\x04tV[\x91\x90\x91\x01\x92\x91PPV\xFE\xA2dipfsX\"\x12 \xDE\x0B \xEC\t\xAD\xEC`\xA6>\x9E\xEE\x14\xB6\xC7\xBC\xDE\x82\xB3\x95/\xE1\xDA.\xFE\xEE9\xBC\xEA\x1CXDdsolcC\0\x08\x17\x003",
     );
     /**Custom error with signature `InvalidLayerTask()` and selector `0x100f934b`.
-```solidity
-error InvalidLayerTask();
-```*/
+    ```solidity
+    error InvalidLayerTask();
+    ```*/
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct InvalidLayerTask {}
@@ -499,9 +475,7 @@ error InvalidLayerTask();
         type UnderlyingRustTuple<'a> = ();
         #[cfg(test)]
         #[allow(dead_code, unreachable_patterns)]
-        fn _type_assertion(
-            _t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>,
-        ) {
+        fn _type_assertion(_t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>) {
             match _t {
                 alloy_sol_types::private::AssertTypeEq::<
                     <UnderlyingSolTuple as alloy_sol_types::SolType>::RustType,
@@ -525,9 +499,7 @@ error InvalidLayerTask();
         #[automatically_derived]
         impl alloy_sol_types::SolError for InvalidLayerTask {
             type Parameters<'a> = UnderlyingSolTuple<'a>;
-            type Token<'a> = <Self::Parameters<
-                'a,
-            > as alloy_sol_types::SolType>::Token<'a>;
+            type Token<'a> = <Self::Parameters<'a> as alloy_sol_types::SolType>::Token<'a>;
             const SIGNATURE: &'static str = "InvalidLayerTask()";
             const SELECTOR: [u8; 4] = [16u8, 15u8, 147u8, 75u8];
             #[inline]
@@ -543,9 +515,9 @@ error InvalidLayerTask();
         }
     };
     /**Constructor`.
-```solidity
-constructor(address _stakeRegistry);
-```*/
+    ```solidity
+    constructor(address _stakeRegistry);
+    ```*/
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct constructorCall {
@@ -560,9 +532,7 @@ constructor(address _stakeRegistry);
             type UnderlyingRustTuple<'a> = (alloy::sol_types::private::Address,);
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
-            fn _type_assertion(
-                _t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>,
-            ) {
+            fn _type_assertion(_t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>) {
                 match _t {
                     alloy_sol_types::private::AssertTypeEq::<
                         <UnderlyingSolTuple as alloy_sol_types::SolType>::RustType,
@@ -580,16 +550,16 @@ constructor(address _stakeRegistry);
             #[doc(hidden)]
             impl ::core::convert::From<UnderlyingRustTuple<'_>> for constructorCall {
                 fn from(tuple: UnderlyingRustTuple<'_>) -> Self {
-                    Self { _stakeRegistry: tuple.0 }
+                    Self {
+                        _stakeRegistry: tuple.0,
+                    }
                 }
             }
         }
         #[automatically_derived]
         impl alloy_sol_types::SolConstructor for constructorCall {
             type Parameters<'a> = (alloy::sol_types::sol_data::Address,);
-            type Token<'a> = <Self::Parameters<
-                'a,
-            > as alloy_sol_types::SolType>::Token<'a>;
+            type Token<'a> = <Self::Parameters<'a> as alloy_sol_types::SolType>::Token<'a>;
             #[inline]
             fn new<'a>(
                 tuple: <Self::Parameters<'a> as alloy_sol_types::SolType>::RustType,
@@ -607,9 +577,9 @@ constructor(address _stakeRegistry);
         }
     };
     /**Function with signature `STAKE_REGISTRY()` and selector `0x761de19f`.
-```solidity
-function STAKE_REGISTRY() external view returns (address);
-```*/
+    ```solidity
+    function STAKE_REGISTRY() external view returns (address);
+    ```*/
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct STAKE_REGISTRYCall {}
@@ -634,9 +604,7 @@ function STAKE_REGISTRY() external view returns (address);
             type UnderlyingRustTuple<'a> = ();
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
-            fn _type_assertion(
-                _t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>,
-            ) {
+            fn _type_assertion(_t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>) {
                 match _t {
                     alloy_sol_types::private::AssertTypeEq::<
                         <UnderlyingSolTuple as alloy_sol_types::SolType>::RustType,
@@ -665,9 +633,7 @@ function STAKE_REGISTRY() external view returns (address);
             type UnderlyingRustTuple<'a> = (alloy::sol_types::private::Address,);
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
-            fn _type_assertion(
-                _t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>,
-            ) {
+            fn _type_assertion(_t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>) {
                 match _t {
                     alloy_sol_types::private::AssertTypeEq::<
                         <UnderlyingSolTuple as alloy_sol_types::SolType>::RustType,
@@ -676,16 +642,14 @@ function STAKE_REGISTRY() external view returns (address);
             }
             #[automatically_derived]
             #[doc(hidden)]
-            impl ::core::convert::From<STAKE_REGISTRYReturn>
-            for UnderlyingRustTuple<'_> {
+            impl ::core::convert::From<STAKE_REGISTRYReturn> for UnderlyingRustTuple<'_> {
                 fn from(value: STAKE_REGISTRYReturn) -> Self {
                     (value._0,)
                 }
             }
             #[automatically_derived]
             #[doc(hidden)]
-            impl ::core::convert::From<UnderlyingRustTuple<'_>>
-            for STAKE_REGISTRYReturn {
+            impl ::core::convert::From<UnderlyingRustTuple<'_>> for STAKE_REGISTRYReturn {
                 fn from(tuple: UnderlyingRustTuple<'_>) -> Self {
                     Self { _0: tuple.0 }
                 }
@@ -694,14 +658,10 @@ function STAKE_REGISTRY() external view returns (address);
         #[automatically_derived]
         impl alloy_sol_types::SolCall for STAKE_REGISTRYCall {
             type Parameters<'a> = ();
-            type Token<'a> = <Self::Parameters<
-                'a,
-            > as alloy_sol_types::SolType>::Token<'a>;
+            type Token<'a> = <Self::Parameters<'a> as alloy_sol_types::SolType>::Token<'a>;
             type Return = STAKE_REGISTRYReturn;
             type ReturnTuple<'a> = (alloy::sol_types::sol_data::Address,);
-            type ReturnToken<'a> = <Self::ReturnTuple<
-                'a,
-            > as alloy_sol_types::SolType>::Token<'a>;
+            type ReturnToken<'a> = <Self::ReturnTuple<'a> as alloy_sol_types::SolType>::Token<'a>;
             const SIGNATURE: &'static str = "STAKE_REGISTRY()";
             const SELECTOR: [u8; 4] = [118u8, 29u8, 225u8, 159u8];
             #[inline]
@@ -719,17 +679,17 @@ function STAKE_REGISTRY() external view returns (address);
                 data: &[u8],
                 validate: bool,
             ) -> alloy_sol_types::Result<Self::Return> {
-                <Self::ReturnTuple<
-                    '_,
-                > as alloy_sol_types::SolType>::abi_decode_sequence(data, validate)
-                    .map(Into::into)
+                <Self::ReturnTuple<'_> as alloy_sol_types::SolType>::abi_decode_sequence(
+                    data, validate,
+                )
+                .map(Into::into)
             }
         }
     };
     /**Function with signature `validateOffchainMessage((bytes32,bytes))` and selector `0x6ea1bd38`.
-```solidity
-function validateOffchainMessage(ILayerSDK.Task memory _task) external view returns (bool _isValid);
-```*/
+    ```solidity
+    function validateOffchainMessage(ILayerSDK.Task memory _task) external view returns (bool _isValid);
+    ```*/
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct validateOffchainMessageCall {
@@ -753,14 +713,11 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
             #[doc(hidden)]
             type UnderlyingSolTuple<'a> = (ILayerSDK::Task,);
             #[doc(hidden)]
-            type UnderlyingRustTuple<'a> = (
-                <ILayerSDK::Task as alloy::sol_types::SolType>::RustType,
-            );
+            type UnderlyingRustTuple<'a> =
+                (<ILayerSDK::Task as alloy::sol_types::SolType>::RustType,);
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
-            fn _type_assertion(
-                _t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>,
-            ) {
+            fn _type_assertion(_t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>) {
                 match _t {
                     alloy_sol_types::private::AssertTypeEq::<
                         <UnderlyingSolTuple as alloy_sol_types::SolType>::RustType,
@@ -769,16 +726,14 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
             }
             #[automatically_derived]
             #[doc(hidden)]
-            impl ::core::convert::From<validateOffchainMessageCall>
-            for UnderlyingRustTuple<'_> {
+            impl ::core::convert::From<validateOffchainMessageCall> for UnderlyingRustTuple<'_> {
                 fn from(value: validateOffchainMessageCall) -> Self {
                     (value._task,)
                 }
             }
             #[automatically_derived]
             #[doc(hidden)]
-            impl ::core::convert::From<UnderlyingRustTuple<'_>>
-            for validateOffchainMessageCall {
+            impl ::core::convert::From<UnderlyingRustTuple<'_>> for validateOffchainMessageCall {
                 fn from(tuple: UnderlyingRustTuple<'_>) -> Self {
                     Self { _task: tuple.0 }
                 }
@@ -791,9 +746,7 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
             type UnderlyingRustTuple<'a> = (bool,);
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
-            fn _type_assertion(
-                _t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>,
-            ) {
+            fn _type_assertion(_t: alloy_sol_types::private::AssertTypeEq<UnderlyingRustTuple>) {
                 match _t {
                     alloy_sol_types::private::AssertTypeEq::<
                         <UnderlyingSolTuple as alloy_sol_types::SolType>::RustType,
@@ -802,16 +755,14 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
             }
             #[automatically_derived]
             #[doc(hidden)]
-            impl ::core::convert::From<validateOffchainMessageReturn>
-            for UnderlyingRustTuple<'_> {
+            impl ::core::convert::From<validateOffchainMessageReturn> for UnderlyingRustTuple<'_> {
                 fn from(value: validateOffchainMessageReturn) -> Self {
                     (value._isValid,)
                 }
             }
             #[automatically_derived]
             #[doc(hidden)]
-            impl ::core::convert::From<UnderlyingRustTuple<'_>>
-            for validateOffchainMessageReturn {
+            impl ::core::convert::From<UnderlyingRustTuple<'_>> for validateOffchainMessageReturn {
                 fn from(tuple: UnderlyingRustTuple<'_>) -> Self {
                     Self { _isValid: tuple.0 }
                 }
@@ -820,14 +771,10 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
         #[automatically_derived]
         impl alloy_sol_types::SolCall for validateOffchainMessageCall {
             type Parameters<'a> = (ILayerSDK::Task,);
-            type Token<'a> = <Self::Parameters<
-                'a,
-            > as alloy_sol_types::SolType>::Token<'a>;
+            type Token<'a> = <Self::Parameters<'a> as alloy_sol_types::SolType>::Token<'a>;
             type Return = validateOffchainMessageReturn;
             type ReturnTuple<'a> = (alloy::sol_types::sol_data::Bool,);
-            type ReturnToken<'a> = <Self::ReturnTuple<
-                'a,
-            > as alloy_sol_types::SolType>::Token<'a>;
+            type ReturnToken<'a> = <Self::ReturnTuple<'a> as alloy_sol_types::SolType>::Token<'a>;
             const SIGNATURE: &'static str = "validateOffchainMessage((bytes32,bytes))";
             const SELECTOR: [u8; 4] = [110u8, 161u8, 189u8, 56u8];
             #[inline]
@@ -838,17 +785,19 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
             }
             #[inline]
             fn tokenize(&self) -> Self::Token<'_> {
-                (<ILayerSDK::Task as alloy_sol_types::SolType>::tokenize(&self._task),)
+                (<ILayerSDK::Task as alloy_sol_types::SolType>::tokenize(
+                    &self._task,
+                ),)
             }
             #[inline]
             fn abi_decode_returns(
                 data: &[u8],
                 validate: bool,
             ) -> alloy_sol_types::Result<Self::Return> {
-                <Self::ReturnTuple<
-                    '_,
-                > as alloy_sol_types::SolType>::abi_decode_sequence(data, validate)
-                    .map(Into::into)
+                <Self::ReturnTuple<'_> as alloy_sol_types::SolType>::abi_decode_sequence(
+                    data, validate,
+                )
+                .map(Into::into)
             }
         }
     };
@@ -865,10 +814,8 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
         /// No guarantees are made about the order of the selectors.
         ///
         /// Prefer using `SolInterface` methods instead.
-        pub const SELECTORS: &'static [[u8; 4usize]] = &[
-            [110u8, 161u8, 189u8, 56u8],
-            [118u8, 29u8, 225u8, 159u8],
-        ];
+        pub const SELECTORS: &'static [[u8; 4usize]] =
+            &[[110u8, 161u8, 189u8, 56u8], [118u8, 29u8, 225u8, 159u8]];
     }
     #[automatically_derived]
     impl alloy_sol_types::SolInterface for OffchainMessageConsumerCalls {
@@ -904,17 +851,17 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
             static DECODE_SHIMS: &[fn(
                 &[u8],
                 bool,
-            ) -> alloy_sol_types::Result<OffchainMessageConsumerCalls>] = &[
+            )
+                -> alloy_sol_types::Result<OffchainMessageConsumerCalls>] = &[
                 {
                     fn validateOffchainMessage(
                         data: &[u8],
                         validate: bool,
                     ) -> alloy_sol_types::Result<OffchainMessageConsumerCalls> {
                         <validateOffchainMessageCall as alloy_sol_types::SolCall>::abi_decode_raw(
-                                data,
-                                validate,
-                            )
-                            .map(OffchainMessageConsumerCalls::validateOffchainMessage)
+                            data, validate,
+                        )
+                        .map(OffchainMessageConsumerCalls::validateOffchainMessage)
                     }
                     validateOffchainMessage
                 },
@@ -924,21 +871,18 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
                         validate: bool,
                     ) -> alloy_sol_types::Result<OffchainMessageConsumerCalls> {
                         <STAKE_REGISTRYCall as alloy_sol_types::SolCall>::abi_decode_raw(
-                                data,
-                                validate,
-                            )
-                            .map(OffchainMessageConsumerCalls::STAKE_REGISTRY)
+                            data, validate,
+                        )
+                        .map(OffchainMessageConsumerCalls::STAKE_REGISTRY)
                     }
                     STAKE_REGISTRY
                 },
             ];
             let Ok(idx) = Self::SELECTORS.binary_search(&selector) else {
-                return Err(
-                    alloy_sol_types::Error::unknown_selector(
-                        <Self as alloy_sol_types::SolInterface>::NAME,
-                        selector,
-                    ),
-                );
+                return Err(alloy_sol_types::Error::unknown_selector(
+                    <Self as alloy_sol_types::SolInterface>::NAME,
+                    selector,
+                ));
             };
             (unsafe { DECODE_SHIMS.get_unchecked(idx) })(data, validate)
         }
@@ -946,9 +890,7 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
         fn abi_encoded_size(&self) -> usize {
             match self {
                 Self::STAKE_REGISTRY(inner) => {
-                    <STAKE_REGISTRYCall as alloy_sol_types::SolCall>::abi_encoded_size(
-                        inner,
-                    )
+                    <STAKE_REGISTRYCall as alloy_sol_types::SolCall>::abi_encoded_size(inner)
                 }
                 Self::validateOffchainMessage(inner) => {
                     <validateOffchainMessageCall as alloy_sol_types::SolCall>::abi_encoded_size(
@@ -961,15 +903,11 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
         fn abi_encode_raw(&self, out: &mut alloy_sol_types::private::Vec<u8>) {
             match self {
                 Self::STAKE_REGISTRY(inner) => {
-                    <STAKE_REGISTRYCall as alloy_sol_types::SolCall>::abi_encode_raw(
-                        inner,
-                        out,
-                    )
+                    <STAKE_REGISTRYCall as alloy_sol_types::SolCall>::abi_encode_raw(inner, out)
                 }
                 Self::validateOffchainMessage(inner) => {
                     <validateOffchainMessageCall as alloy_sol_types::SolCall>::abi_encode_raw(
-                        inner,
-                        out,
+                        inner, out,
                     )
                 }
             }
@@ -1020,28 +958,22 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
             static DECODE_SHIMS: &[fn(
                 &[u8],
                 bool,
-            ) -> alloy_sol_types::Result<OffchainMessageConsumerErrors>] = &[
-                {
-                    fn InvalidLayerTask(
-                        data: &[u8],
-                        validate: bool,
-                    ) -> alloy_sol_types::Result<OffchainMessageConsumerErrors> {
-                        <InvalidLayerTask as alloy_sol_types::SolError>::abi_decode_raw(
-                                data,
-                                validate,
-                            )
-                            .map(OffchainMessageConsumerErrors::InvalidLayerTask)
-                    }
-                    InvalidLayerTask
-                },
-            ];
+            )
+                -> alloy_sol_types::Result<OffchainMessageConsumerErrors>] = &[{
+                fn InvalidLayerTask(
+                    data: &[u8],
+                    validate: bool,
+                ) -> alloy_sol_types::Result<OffchainMessageConsumerErrors> {
+                    <InvalidLayerTask as alloy_sol_types::SolError>::abi_decode_raw(data, validate)
+                        .map(OffchainMessageConsumerErrors::InvalidLayerTask)
+                }
+                InvalidLayerTask
+            }];
             let Ok(idx) = Self::SELECTORS.binary_search(&selector) else {
-                return Err(
-                    alloy_sol_types::Error::unknown_selector(
-                        <Self as alloy_sol_types::SolInterface>::NAME,
-                        selector,
-                    ),
-                );
+                return Err(alloy_sol_types::Error::unknown_selector(
+                    <Self as alloy_sol_types::SolInterface>::NAME,
+                    selector,
+                ));
             };
             (unsafe { DECODE_SHIMS.get_unchecked(idx) })(data, validate)
         }
@@ -1049,9 +981,7 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
         fn abi_encoded_size(&self) -> usize {
             match self {
                 Self::InvalidLayerTask(inner) => {
-                    <InvalidLayerTask as alloy_sol_types::SolError>::abi_encoded_size(
-                        inner,
-                    )
+                    <InvalidLayerTask as alloy_sol_types::SolError>::abi_encoded_size(inner)
                 }
             }
         }
@@ -1059,10 +989,7 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
         fn abi_encode_raw(&self, out: &mut alloy_sol_types::private::Vec<u8>) {
             match self {
                 Self::InvalidLayerTask(inner) => {
-                    <InvalidLayerTask as alloy_sol_types::SolError>::abi_encode_raw(
-                        inner,
-                        out,
-                    )
+                    <InvalidLayerTask as alloy_sol_types::SolError>::abi_encode_raw(inner, out)
                 }
             }
         }
@@ -1070,7 +997,7 @@ function validateOffchainMessage(ILayerSDK.Task memory _task) external view retu
     use alloy::contract as alloy_contract;
     /**Creates a new wrapper around an on-chain [`OffchainMessageConsumer`](self) contract instance.
 
-See the [wrapper's documentation](`OffchainMessageConsumerInstance`) for more details.*/
+    See the [wrapper's documentation](`OffchainMessageConsumerInstance`) for more details.*/
     #[inline]
     pub const fn new<
         T: alloy_contract::private::Transport + ::core::clone::Clone,
@@ -1084,9 +1011,9 @@ See the [wrapper's documentation](`OffchainMessageConsumerInstance`) for more de
     }
     /**Deploys this contract using the given `provider` and constructor arguments, if any.
 
-Returns a new instance of the contract, if the deployment was successful.
+    Returns a new instance of the contract, if the deployment was successful.
 
-For more fine-grained control over the deployment process, use [`deploy_builder`] instead.*/
+    For more fine-grained control over the deployment process, use [`deploy_builder`] instead.*/
     #[inline]
     pub fn deploy<
         T: alloy_contract::private::Transport + ::core::clone::Clone,
@@ -1101,10 +1028,10 @@ For more fine-grained control over the deployment process, use [`deploy_builder`
         OffchainMessageConsumerInstance::<T, P, N>::deploy(provider, _stakeRegistry)
     }
     /**Creates a `RawCallBuilder` for deploying this contract using the given `provider`
-and constructor arguments, if any.
+    and constructor arguments, if any.
 
-This is a simple wrapper around creating a `RawCallBuilder` with the data set to
-the bytecode concatenated with the constructor's ABI-encoded arguments.*/
+    This is a simple wrapper around creating a `RawCallBuilder` with the data set to
+    the bytecode concatenated with the constructor's ABI-encoded arguments.*/
     #[inline]
     pub fn deploy_builder<
         T: alloy_contract::private::Transport + ::core::clone::Clone,
@@ -1114,29 +1041,21 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
         provider: P,
         _stakeRegistry: alloy::sol_types::private::Address,
     ) -> alloy_contract::RawCallBuilder<T, P, N> {
-        OffchainMessageConsumerInstance::<
-            T,
-            P,
-            N,
-        >::deploy_builder(provider, _stakeRegistry)
+        OffchainMessageConsumerInstance::<T, P, N>::deploy_builder(provider, _stakeRegistry)
     }
     /**A [`OffchainMessageConsumer`](self) instance.
 
-Contains type-safe methods for interacting with an on-chain instance of the
-[`OffchainMessageConsumer`](self) contract located at a given `address`, using a given
-provider `P`.
+    Contains type-safe methods for interacting with an on-chain instance of the
+    [`OffchainMessageConsumer`](self) contract located at a given `address`, using a given
+    provider `P`.
 
-If the contract bytecode is available (see the [`sol!`](alloy_sol_types::sol!)
-documentation on how to provide it), the `deploy` and `deploy_builder` methods can
-be used to deploy a new instance of the contract.
+    If the contract bytecode is available (see the [`sol!`](alloy_sol_types::sol!)
+    documentation on how to provide it), the `deploy` and `deploy_builder` methods can
+    be used to deploy a new instance of the contract.
 
-See the [module-level documentation](self) for all the available methods.*/
+    See the [module-level documentation](self) for all the available methods.*/
     #[derive(Clone)]
-    pub struct OffchainMessageConsumerInstance<
-        T,
-        P,
-        N = alloy_contract::private::Ethereum,
-    > {
+    pub struct OffchainMessageConsumerInstance<T, P, N = alloy_contract::private::Ethereum> {
         address: alloy_sol_types::private::Address,
         provider: P,
         _network_transport: ::core::marker::PhantomData<(N, T)>,
@@ -1153,18 +1072,16 @@ See the [module-level documentation](self) for all the available methods.*/
     /// Instantiation and getters/setters.
     #[automatically_derived]
     impl<
-        T: alloy_contract::private::Transport + ::core::clone::Clone,
-        P: alloy_contract::private::Provider<T, N>,
-        N: alloy_contract::private::Network,
-    > OffchainMessageConsumerInstance<T, P, N> {
+            T: alloy_contract::private::Transport + ::core::clone::Clone,
+            P: alloy_contract::private::Provider<T, N>,
+            N: alloy_contract::private::Network,
+        > OffchainMessageConsumerInstance<T, P, N>
+    {
         /**Creates a new wrapper around an on-chain [`OffchainMessageConsumer`](self) contract instance.
 
-See the [wrapper's documentation](`OffchainMessageConsumerInstance`) for more details.*/
+        See the [wrapper's documentation](`OffchainMessageConsumerInstance`) for more details.*/
         #[inline]
-        pub const fn new(
-            address: alloy_sol_types::private::Address,
-            provider: P,
-        ) -> Self {
+        pub const fn new(address: alloy_sol_types::private::Address, provider: P) -> Self {
             Self {
                 address,
                 provider,
@@ -1173,9 +1090,9 @@ See the [wrapper's documentation](`OffchainMessageConsumerInstance`) for more de
         }
         /**Deploys this contract using the given `provider` and constructor arguments, if any.
 
-Returns a new instance of the contract, if the deployment was successful.
+        Returns a new instance of the contract, if the deployment was successful.
 
-For more fine-grained control over the deployment process, use [`deploy_builder`] instead.*/
+        For more fine-grained control over the deployment process, use [`deploy_builder`] instead.*/
         #[inline]
         pub async fn deploy(
             provider: P,
@@ -1186,10 +1103,10 @@ For more fine-grained control over the deployment process, use [`deploy_builder`
             Ok(Self::new(contract_address, call_builder.provider))
         }
         /**Creates a `RawCallBuilder` for deploying this contract using the given `provider`
-and constructor arguments, if any.
+        and constructor arguments, if any.
 
-This is a simple wrapper around creating a `RawCallBuilder` with the data set to
-the bytecode concatenated with the constructor's ABI-encoded arguments.*/
+        This is a simple wrapper around creating a `RawCallBuilder` with the data set to
+        the bytecode concatenated with the constructor's ABI-encoded arguments.*/
         #[inline]
         pub fn deploy_builder(
             provider: P,
@@ -1199,12 +1116,12 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
                 provider,
                 [
                     &BYTECODE[..],
-                    &alloy_sol_types::SolConstructor::abi_encode(
-                        &constructorCall { _stakeRegistry },
-                    )[..],
+                    &alloy_sol_types::SolConstructor::abi_encode(&constructorCall {
+                        _stakeRegistry,
+                    })[..],
                 ]
-                    .concat()
-                    .into(),
+                .concat()
+                .into(),
             )
         }
         /// Returns a reference to the address.
@@ -1242,10 +1159,11 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
     /// Function calls.
     #[automatically_derived]
     impl<
-        T: alloy_contract::private::Transport + ::core::clone::Clone,
-        P: alloy_contract::private::Provider<T, N>,
-        N: alloy_contract::private::Network,
-    > OffchainMessageConsumerInstance<T, P, N> {
+            T: alloy_contract::private::Transport + ::core::clone::Clone,
+            P: alloy_contract::private::Provider<T, N>,
+            N: alloy_contract::private::Network,
+        > OffchainMessageConsumerInstance<T, P, N>
+    {
         /// Creates a new call builder using this contract instance's provider and address.
         ///
         /// Note that the call can be any function call, not just those defined in this
@@ -1267,20 +1185,17 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
             &self,
             _task: <ILayerSDK::Task as alloy::sol_types::SolType>::RustType,
         ) -> alloy_contract::SolCallBuilder<T, &P, validateOffchainMessageCall, N> {
-            self.call_builder(
-                &validateOffchainMessageCall {
-                    _task,
-                },
-            )
+            self.call_builder(&validateOffchainMessageCall { _task })
         }
     }
     /// Event filters.
     #[automatically_derived]
     impl<
-        T: alloy_contract::private::Transport + ::core::clone::Clone,
-        P: alloy_contract::private::Provider<T, N>,
-        N: alloy_contract::private::Network,
-    > OffchainMessageConsumerInstance<T, P, N> {
+            T: alloy_contract::private::Transport + ::core::clone::Clone,
+            P: alloy_contract::private::Provider<T, N>,
+            N: alloy_contract::private::Network,
+        > OffchainMessageConsumerInstance<T, P, N>
+    {
         /// Creates a new event filter using this contract instance's provider and address.
         ///
         /// Note that the type can be any event, not just those defined in this contract.
